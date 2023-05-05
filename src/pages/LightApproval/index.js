@@ -21,22 +21,7 @@ import { getFullName } from './Utils';
 import eyeIcon from '../../assets/images/eye.svg';
 import { GreenLightApproval } from '../../components/Formik/AllForms/greenLightApproval';
 
-// Actions
-import {
-  getCompanyLocationAction,
-  createCompanyLocationAction,
-  getSystemUserAction,
-  createSystemUserAction,
-  createSystemUserUploadAction,
-  getSystemUserDownloadAction,
-  getPortalUserAction,
-  createPortalUserAction,
-  createPortalUserUploadAction,
-  getPortalUserDownloadAction,
-  fetchUserRoles,
-  getSitesAction,
-  getPerimssionAction,
-} from '../../Actions/settings';
+
 import {
   setForm,
   setFormCloseReducer,
@@ -81,130 +66,9 @@ const LightApproval = () => {
   const [okBtnText, setokBtnText] = useState();
   const [okBtnIcon, setokBtnIcon] = useState();
   const [cancelBtnText, setCancelBtnText] = useState();
-  const [cancelBtnIcon, setSancelBtnIcon] = useState();
+  const [cancelBtnIcon, setSancelBtnIcon] = useState()
 
-  const addCompanyLocation = () => {
-    setCTA(() => async (data) => {
-      dispatch(setFormLoaderReducer(true));
-      const payload = {
-        name: data.name,
-        iconName: data.itemCategoryId,
-      };
-      const resp = await createCompanyLocationAction(payload);
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`${resp.data?.name} added.`));
-        getCompanyLocationAction();
-      }
-    });
-  };
 
-  const addSystemUser = () => {
-    setCTA(() => async (payload) => {
-      dispatch(setFormLoaderReducer(true));
-      const resp = await createSystemUserAction(payload);
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`New user added.`));
-        getSystemUserAction();
-      }
-    });
-  };
-
-  const bulkImportSystemUser = () => {
-    setCTA(() => async (payload) => {
-      dispatch(setFormLoaderReducer(true));
-      const formData = new FormData();
-      formData.append('userFile', payload.userFile);
-      const resp = await createSystemUserUploadAction(formData);
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(
-          showSuccessReducer(`${getFullName(resp.data)} system user added.`)
-        );
-        getSystemUserAction();
-      }
-    });
-  };
-
-  const addPortalUser = () => {
-    setCTA(() => async (payload) => {
-      const filterpayload = {
-        ...payload,
-        siteIds: payload.siteIds
-          ?.filter((site) => site.checked === true)
-          ?.map((site) => {
-            return site.id;
-          }),
-      };
-
-      dispatch(setFormLoaderReducer(true));
-      const resp = await createPortalUserAction(filterpayload);
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`New user added.`));
-        getPortalUserAction();
-      }
-    });
-  };
-
-  const bulkImportPortalUser = () => {
-    setCTA(() => async (payload) => {
-      const formData = new FormData();
-      formData.append('userFile', payload.userFile);
-      const resp = await createPortalUserUploadAction(formData);
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(
-          showSuccessReducer(`${getFullName(resp.data)} portal user added.`)
-        );
-        getPortalUserAction();
-      }
-    });
-  };
-
-  const handleDownload = async (downloadType) => {
-    if (downloadType === 'SystemUser') {
-      dispatch(setFormLoaderReducer(true));
-      const resp = await getSystemUserDownloadAction();
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        //dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`File downloaded.`));
-        const url = window.URL.createObjectURL(new Blob([resp.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'SystemUsers.xlsx');
-        document.body.appendChild(link);
-        link.click();
-      }
-    }
-    if (downloadType === 'PortalUser') {
-      dispatch(setFormLoaderReducer(true));
-      const resp = await getPortalUserDownloadAction();
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(showSuccessReducer(`File downloaded.`));
-
-        const url = window.URL.createObjectURL(new Blob([resp.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'PortalUsers.xlsx');
-        document.body.appendChild(link);
-        link.click();
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchUserRoles();
-    getSitesAction();
-    getPerimssionAction();
-  }, []);
   return (
     <>
       <div className={`${editRole ? 'hidden' : 'block'}`}>
@@ -419,7 +283,7 @@ const LightApproval = () => {
           </div>
 
           <div className="w-full rounded-[5px] bg-white px-[16px] py-[21px]">
-            <div className="w-full justify-end flex items-center gap-2">
+            <div className="flex items-center justify-end w-full gap-2">
               <Button
                 Icon={<Cancel />}
                 text="Reject"

@@ -33,12 +33,7 @@ import {
   setFormLoaderReducer,
 } from '../../../Store/reducers/uiSettings';
 
-// Actions
-import {
-  getSystemUserAction,
-  updateSystemUserAction,
-  deleteSystemUserAction,
-} from '../../../Actions/settings';
+
 
 // Utils
 import { getFullName } from '../Utils';
@@ -57,9 +52,6 @@ const All = ({
   const { settings } = useSelector((state) => state);
   const { systemUsers, systemUsersFilter } = settings;
 
-  useEffect(() => {
-    getSystemUserAction();
-  }, []);
 
   const [searchQuery, setsearchQuery] = useState('');
   const [dataList, setDataList] = useState(null);
@@ -80,30 +72,8 @@ const All = ({
     })();
   }, [searchQuery, systemUsers]);
 
-  const editSystemUser = (row) => {
-    setCTA(() => async (payload) => {
-      dispatch(setFormLoaderReducer(true));
-      const resp = await updateSystemUserAction(row.id, payload);
-      dispatch(setFormLoaderReducer(false));
-      if (resp?.status === 200) {
-        dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`User updated.`));
-        getSystemUserAction();
-      }
-    });
-  };
 
-  const deleteSystemUser = (row) => {
-    setCTA(() => async (data) => {
-      dispatch(setFormLoaderReducer(true));
-      const resp = await deleteSystemUserAction(row.id, data.change_reason);
-      if (resp?.status === 200) {
-        dispatch(showSuccessReducer(`User deleted.`));
-        dispatch(setFormCloseReducer());
-      }
-      dispatch(setFormLoaderReducer(false));
-    });
-  };
+
 
   const SkelatonCoponent = () => {
     return (
@@ -353,7 +323,7 @@ const All = ({
                                 type: 'deleteItem',
                               })
                             );
-                            deleteSystemUser(row);
+
                           }}
                         />
                       </div>
