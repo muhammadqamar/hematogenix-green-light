@@ -1,26 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Tab, Tabs } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tab, Tabs } from 'react-bootstrap';
+import DataTable from 'react-data-table-component';
 
-import { Add, Assemblies, BlueTick, Check, CheckAction, CheckApprove, CheckReady, Checked, CrossIcon, FormReject, Pending, Reject } from "../../HemeIconLibrary";
-import FormContainer from "../../components/Formik/formContainer";
-import { companyLocationField } from "../../components/Formik/AllForms/companyLocationField";
-import { createUserField, bulkFileImport } from "../../components/Formik/AllForms/addUserFields";
-import { addPortalUserFields } from "../../components/Formik/AllForms/addPortalUserFields";
-
-import CompanyLocation from "../../HemeIconLibrary/settingsIcons/companyLocation";
-import PortalUser from "../../HemeIconLibrary/settingsIcons/portalUser";
-import RoleManagmrnt from "../../HemeIconLibrary/settingsIcons/roleManagmrnt";
-import SystemUser from "../../HemeIconLibrary/settingsIcons/systemUser";
-import LocationPurple from "../../HemeIconLibrary/settingsIcons/locationPurple";
-import ImportIcon from "../../HemeIconLibrary/settingsIcons/import";
-import UserPurple from "../../HemeIconLibrary/settingsIcons/userPurple";
-import { Import } from "../../HemeIconLibrary";
-// import AddRole from "./RoleManagmentList/addRole";
-// Utils
-import HemaHeadingWithSubText from "../../utils/HemaHeadingWithSubText";
-import { Button, Alert } from "../../utils";
-import { getFullName } from "./Utils";
+import {
+  Assemblies,
+  Cancel,
+  CheckApprove,
+  CheckReady,
+  Confirm,
+  CrossIcon,
+  EyeIcon,
+  Pending,
+  Reject,
+} from '../../HemeIconLibrary';
+import FormContainer from '../../components/Formik/formContainer';
+import HemaHeadingWithSubText from '../../utils/HemaHeadingWithSubText';
+import { Button, Alert, HemaValue, HemaLabel } from '../../utils';
+import { getFullName } from './Utils';
+import Heading from '../logistOrchestra/logisticComponents/heading';
+import eyeIcon from '../../assets/images/eye.svg';
+import { GreenLightApproval } from '../../components/Formik/AllForms/greenLightApproval';
 
 // Actions
 import {
@@ -37,14 +37,30 @@ import {
   fetchUserRoles,
   getSitesAction,
   getPerimssionAction,
-} from "../../Actions/settings";
-import { setForm, setFormCloseReducer, showSuccessReducer, editFormReducer, setFormLoaderReducer } from "../../Store/reducers/uiSettings";
+} from '../../Actions/settings';
+import {
+  setForm,
+  setFormCloseReducer,
+  showSuccessReducer,
+  editFormReducer,
+  setFormLoaderReducer,
+} from '../../Store/reducers/uiSettings';
 
 // Components
-import AllApproval from "./All";
-import PendingUser from "./Pending";
-import Approved from "./Approved";
-import Rejected from "./Rejected";
+import AllApproval from './All';
+import PendingUser from './Pending';
+import Approved from './Approved';
+import Rejected from './Rejected';
+
+const data = [
+  {
+    name: 'ali',
+  },
+
+  {
+    name: 'ali',
+  },
+];
 
 const LightApproval = () => {
   const dispatch = useDispatch();
@@ -56,8 +72,10 @@ const LightApproval = () => {
   const [formIcon, setFormIcon] = useState();
   const [formValidation, setFormValidation] = useState();
   const [updatedData, setUpdatedData] = useState();
-  const [activeTab, setactiveTab] = useState("CompanyLocation");
-  const [pageSub, setPageSub] = useState("Manage your green light approval here.");
+  const [activeTab, setactiveTab] = useState('CompanyLocation');
+  const [pageSub, setPageSub] = useState(
+    'Manage your green light approval here.'
+  );
   const [allItemsInTemplate, setAllItemsInTemplate] = useState();
   const [dropdownItemList, setDropDownItemList] = useState();
   const [editRole, setEditRole] = useState(false);
@@ -100,12 +118,14 @@ const LightApproval = () => {
     setCTA(() => async (payload) => {
       dispatch(setFormLoaderReducer(true));
       const formData = new FormData();
-      formData.append("userFile", payload.userFile);
+      formData.append('userFile', payload.userFile);
       const resp = await createSystemUserUploadAction(formData);
       dispatch(setFormLoaderReducer(false));
       if (resp?.status === 200) {
         dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`${getFullName(resp.data)} system user added.`));
+        dispatch(
+          showSuccessReducer(`${getFullName(resp.data)} system user added.`)
+        );
         getSystemUserAction();
       }
     });
@@ -136,18 +156,20 @@ const LightApproval = () => {
   const bulkImportPortalUser = () => {
     setCTA(() => async (payload) => {
       const formData = new FormData();
-      formData.append("userFile", payload.userFile);
+      formData.append('userFile', payload.userFile);
       const resp = await createPortalUserUploadAction(formData);
       if (resp?.status === 200) {
         dispatch(setFormCloseReducer());
-        dispatch(showSuccessReducer(`${getFullName(resp.data)} portal user added.`));
+        dispatch(
+          showSuccessReducer(`${getFullName(resp.data)} portal user added.`)
+        );
         getPortalUserAction();
       }
     });
   };
 
   const handleDownload = async (downloadType) => {
-    if (downloadType === "SystemUser") {
+    if (downloadType === 'SystemUser') {
       dispatch(setFormLoaderReducer(true));
       const resp = await getSystemUserDownloadAction();
       dispatch(setFormLoaderReducer(false));
@@ -155,14 +177,14 @@ const LightApproval = () => {
         //dispatch(setFormCloseReducer());
         dispatch(showSuccessReducer(`File downloaded.`));
         const url = window.URL.createObjectURL(new Blob([resp.data]));
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        link.setAttribute("download", "SystemUsers.xlsx");
+        link.setAttribute('download', 'SystemUsers.xlsx');
         document.body.appendChild(link);
         link.click();
       }
     }
-    if (downloadType === "PortalUser") {
+    if (downloadType === 'PortalUser') {
       dispatch(setFormLoaderReducer(true));
       const resp = await getPortalUserDownloadAction();
       dispatch(setFormLoaderReducer(false));
@@ -170,9 +192,9 @@ const LightApproval = () => {
         dispatch(showSuccessReducer(`File downloaded.`));
 
         const url = window.URL.createObjectURL(new Blob([resp.data]));
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        link.setAttribute("download", "PortalUsers.xlsx");
+        link.setAttribute('download', 'PortalUsers.xlsx');
         document.body.appendChild(link);
         link.click();
       }
@@ -186,133 +208,12 @@ const LightApproval = () => {
   }, []);
   return (
     <>
-      <div className={`${editRole ? "hidden" : "block"}`}>
+      <div className={`${editRole ? 'hidden' : 'block'}`}>
         <div className="flex gap-[10px] justify-between items-end">
-          <HemaHeadingWithSubText heading="Green Light Approval" sub={pageSub} />
-
-          {/* {activeTab === "CompanyLocation" ? (
-            <div className="flex gap-[10px] ">
-              <Button
-                text="Add Company Location"
-                Icon={<Add color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  setformName("Add Company Location");
-                  setokBtnText("Create");
-                  setokBtnIcon(<Add color="white" />);
-                  setFormIcon(<LocationPurple />);
-                  companyLocationField[0].initialValue = "";
-                  companyLocationField[1].initialValue = "";
-                  setUpdatedData(companyLocationField.slice(0, 2));
-                  addCompanyLocation();
-                  dispatch(setForm({ state: true, type: "additem" }));
-                }}
-              />
-            </div>
-          ) : activeTab === "SystemUser" ? (
-            <div className="flex gap-[10px] ">
-              <Button
-                text="Bulk Import"
-                Icon={<ImportIcon color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  setformName("Bulk Import");
-                  setFormIcon(<Import />);
-                  setokBtnText("Import");
-                  setokBtnIcon(<ImportIcon color="white" />);
-                  bulkFileImport[0].onClick = () => {
-                    handleDownload("SystemUser");
-                  };
-                  setUpdatedData(bulkFileImport);
-                  bulkImportSystemUser();
-                  dispatch(setForm({ state: true, type: "additem" }));
-                }}
-              />
-              <Button
-                text="Add New User"
-                Icon={<Add color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  setformName("Add New User");
-                  setFormIcon(<UserPurple />);
-                  setokBtnText("Create");
-                  setokBtnIcon(<Add color="white" />);
-                  createUserField[0].initialValue = "";
-                  createUserField[1].initialValue = "";
-                  createUserField[2].initialValue = "";
-                  createUserField[2].disabled = false;
-                  createUserField[3].initialValue = "";
-                  createUserField[3].options = settings?.userRole;
-                  createUserField[4].initialValue = true;
-                  setUpdatedData(createUserField.slice(0, 5));
-
-                  addSystemUser();
-                  dispatch(setForm({ state: true, type: "additem" }));
-                }}
-              />
-            </div>
-          ) : activeTab === "PortalUser" ? (
-            <div className="flex gap-[10px] ">
-              <Button
-                text="Bulk Import"
-                Icon={<ImportIcon color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  setformName("Bulk Import");
-                  setFormIcon(<Import />);
-                  setokBtnText("Import");
-                  setokBtnIcon(<ImportIcon color="white" />);
-                  bulkFileImport[0].onClick = () => {
-                    handleDownload("PortalUser");
-                  };
-                  setUpdatedData(bulkFileImport);
-                  bulkImportPortalUser();
-                  dispatch(setForm({ state: true, type: "additem" }));
-                }}
-              />
-              <Button
-                text="Add New User"
-                Icon={<Add color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  setformName("Add New User");
-                  setFormIcon(<UserPurple />);
-                  setokBtnText("Create");
-                  setokBtnIcon(<Add color="white" />);
-                  addPortalUserFields[0].initialValue = "";
-                  addPortalUserFields[1].initialValue = "";
-                  addPortalUserFields[2].initialValue = "";
-                  addPortalUserFields[2].disabled = false;
-                  // addPortalUserFields[4].options = settings?.sites;
-                  addPortalUserFields[4].initialValue = false;
-                  addPortalUserFields[5].initialValue = settings?.sites?.map((site) => {
-                    return { ...site, checked: false };
-                  });
-                  setUpdatedData(addPortalUserFields.slice(0, 6));
-                  addPortalUser();
-                  dispatch(setForm({ state: true, type: "additem" }));
-                }}
-              />
-            </div>
-          ) : (
-            <div className="flex gap-[10px] ">
-              <Button
-                text="Add New Role"
-                Icon={<Add color="white" />}
-                color="text-white"
-                bg="bg-primary1"
-                cta={() => {
-                  dispatch(editFormReducer(null));
-                  setEditRole(true);
-                }}
-              />
-            </div>
-          )} */}
+          <HemaHeadingWithSubText
+            heading="Green Light Approval"
+            sub={pageSub}
+          />
         </div>
         <Alert />
         <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
@@ -322,16 +223,16 @@ const LightApproval = () => {
             className="mb-3 gap-[20px]"
             onSelect={(key) => {
               setactiveTab(key);
-              if (key === "CompanyLocation") {
-                setPageSub("Manage your green light approval here.");
-              } else if (key === "SystemUser") {
-                setPageSub("Manage your green light approval here.");
-              } else if (key === "PortalUser") {
-                setPageSub("Manage your green light approval here.");
-              } else if (key === "RoleManagment") {
-                setPageSub("Manage your green light approval here.");
+              if (key === 'CompanyLocation') {
+                setPageSub('Manage your green light approval here.');
+              } else if (key === 'SystemUser') {
+                setPageSub('Manage your green light approval here.');
+              } else if (key === 'PortalUser') {
+                setPageSub('Manage your green light approval here.');
+              } else if (key === 'RoleManagment') {
+                setPageSub('Manage your green light approval here.');
               } else {
-                setPageSub("");
+                setPageSub('');
               }
             }}
           >
@@ -413,6 +314,158 @@ const LightApproval = () => {
           </Tabs>
         </div>
 
+        {/* detail section */}
+        <div className="w-full">
+          <div className="w-full rounded-[5px] bg-white pt-[24px] pb-[16px] mb-[10px]">
+            <div className=" w-full px-[16px]">
+              <Heading heading="Details" />
+              <div className="flex items-center justify-between  pr-[120px] mt-[21px] mb-[32px]">
+                <div className="flex items-center gap-[20px]">
+                  <HemaLabel text="Order Confirmation Number" />
+                  <HemaValue text="2280" />
+                </div>
+                <div className="flex items-center gap-[20px]">
+                  <HemaLabel text="Sponsor" />
+                  <HemaValue text="Pfizer" />
+                </div>
+                <div className="flex items-center gap-[20px]">
+                  <HemaLabel text="Study Number" />
+                  <HemaValue text="ARC-101 ARM 1" />
+                </div>
+                <div className="flex items-center gap-[20px] ">
+                  <HemaLabel text="Site Code" />
+                  <HemaValue text="001" />
+                </div>
+              </div>
+              <Heading heading="Documents" border />
+            </div>
+            <div className="w-full border-t-[1px] border-b-[1px] border-solid border-[#DEE2E6]">
+              <DataTable
+                data={data}
+                customStyles={{
+                  rows: {
+                    style: {
+                      paddingRight: '20px',
+                      style: { overflow: 'visible !important' },
+                    },
+                  },
+
+                  cells: {
+                    style: { overflow: 'visible !important' },
+                  },
+
+                  responsiveWrapper: {
+                    style: { overflow: 'visible !important' },
+                  },
+                }}
+                columns={[
+                  {
+                    name: (
+                      <HemaValue
+                        text={'Name'}
+                        className="font-normal text-[#000000]"
+                      />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    selector: (row, index) => (
+                      <>
+                        <HemaValue text={row.name || 'Airway Bill'} />
+                      </>
+                    ),
+                    sortId: 'firstName',
+                  },
+                  {
+                    name: (
+                      <HemaValue
+                        text={'Action'}
+                        className="font-normal text-[#000000]"
+                      />
+                    ),
+                    cell: (row) => {
+                      return (
+                        <div className="flex">
+                          <div className="flex w-[100px] justify-end meta">
+                            <Button
+                              Icon={<img src={eyeIcon} alt="" />}
+                              padding={false}
+                              color="text-[#dc2626]"
+                              bg="bg-bgActionDots"
+                              cta={() => {
+                                dispatch(editFormReducer(row));
+
+                                setformName('Delete user');
+                                setokBtnIcon();
+                                setokBtnText('Confirm');
+                                setFormIcon(<EyeIcon />);
+                                dispatch(
+                                  setForm({
+                                    state: true,
+                                    type: 'deleteItem',
+                                  })
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    },
+                    ignoreRowClick: true,
+                    allowOverflow: true,
+                    button: true,
+                  },
+                ]}
+              />
+            </div>
+          </div>
+
+          <div className="w-full rounded-[5px] bg-white px-[16px] py-[21px]">
+            <div className="w-full justify-end flex items-center gap-2">
+              <Button
+                Icon={<Cancel />}
+                text="Reject"
+                color="text-[#605DAF]"
+                bg="bg-white"
+                border="border-[2px] border-solid border-[#605DAF]"
+                cta={() => {
+                  GreenLightApproval[0].initialValue = '';
+                  setUpdatedData(GreenLightApproval);
+                  setformName('Reject');
+                  setokBtnIcon();
+                  setokBtnText('Submit');
+                  setFormIcon(<Reject />);
+                  dispatch(
+                    setForm({
+                      state: true,
+                      type: 'green-reject',
+                    })
+                  );
+                }}
+              />
+              <Button
+                Icon={<Confirm />}
+                text="Approve"
+                color="text-white"
+                bg="bg-[#605DAF]"
+                cta={() => {
+                  GreenLightApproval[0].initialValue = '';
+                  setUpdatedData(GreenLightApproval);
+                  setformName('Approve');
+                  setokBtnIcon();
+                  setokBtnText('Submit');
+                  setFormIcon(<CheckApprove />);
+                  dispatch(
+                    setForm({
+                      state: true,
+                      type: 'green-approve',
+                    })
+                  );
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
         {uisettings?.openform && (
           <FormContainer
             cta={CTA}
@@ -435,7 +488,9 @@ const LightApproval = () => {
         )}
       </div>
 
-      <div className={`${!editRole ? "hidden" : "block"}`}>{/* <AddRole setEditRole={setEditRole} /> */}</div>
+      <div className={`${!editRole ? 'hidden' : 'block'}`}>
+        {/* <AddRole setEditRole={setEditRole} /> */}
+      </div>
     </>
   );
 };

@@ -1,27 +1,58 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Alert as BootstrapAlert } from "react-bootstrap";
-import DataTable from "react-data-table-component";
-import Skeleton from "react-loading-skeleton";
-import { filter } from "smart-array-filter";
-import { setSystemUsersFilter } from "../../../Store/reducers/settings";
-import { Button, FormSearch, HemaValue, Pagination, FilterColumn } from "../../../utils";
-import { AddInventory, DeleteInventory, DeletePurple, EditColor, SearchColor, ExpiryAlertPurple, EyeIcon } from "../../../HemeIconLibrary";
-import eyeIcon from "../../../assets/images/eye.svg";
-import { createUserField } from "../../../components/Formik/AllForms/addUserFields";
-import { Remove } from "../../../components/Formik/AllForms/remove";
-import { sortedData } from "../../../helpers/sort";
-import { setForm, editFormReducer, setFormCloseReducer, showSuccessReducer, setFormLoaderReducer } from "../../../Store/reducers/uiSettings";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Alert as BootstrapAlert } from 'react-bootstrap';
+import DataTable from 'react-data-table-component';
+import Skeleton from 'react-loading-skeleton';
+import { filter } from 'smart-array-filter';
+import { setSystemUsersFilter } from '../../../Store/reducers/settings';
+import {
+  Button,
+  FormSearch,
+  HemaValue,
+  Pagination,
+  FilterColumn,
+} from '../../../utils';
+import {
+  AddInventory,
+  DeleteInventory,
+  DeletePurple,
+  EditColor,
+  SearchColor,
+  ExpiryAlertPurple,
+  EyeIcon,
+} from '../../../HemeIconLibrary';
+import eyeIcon from '../../../assets/images/eye.svg';
+import { createUserField } from '../../../components/Formik/AllForms/addUserFields';
+import { Remove } from '../../../components/Formik/AllForms/remove';
+import { sortedData } from '../../../helpers/sort';
+import {
+  setForm,
+  editFormReducer,
+  setFormCloseReducer,
+  showSuccessReducer,
+  setFormLoaderReducer,
+} from '../../../Store/reducers/uiSettings';
 
 // Actions
-import { getSystemUserAction, updateSystemUserAction, deleteSystemUserAction } from "../../../Actions/settings";
+import {
+  getSystemUserAction,
+  updateSystemUserAction,
+  deleteSystemUserAction,
+} from '../../../Actions/settings';
 
 // Utils
-import { getFullName } from "../Utils";
+import { getFullName } from '../Utils';
 
 // assets
 
-const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnText, setokBtnIcon }) => {
+const Rejected = ({
+  setCTA,
+  setformName,
+  setFormIcon,
+  setUpdatedData,
+  setokBtnText,
+  setokBtnIcon,
+}) => {
   const dispatch = useDispatch();
   const { settings } = useSelector((state) => state);
   const { systemUsers, systemUsersFilter } = settings;
@@ -30,7 +61,7 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
     getSystemUserAction();
   }, []);
 
-  const [searchQuery, setsearchQuery] = useState("");
+  const [searchQuery, setsearchQuery] = useState('');
   const [dataList, setDataList] = useState(null);
 
   //search for location
@@ -92,10 +123,18 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
     if (Object.keys(systemUsersFilter)?.length) {
       const filterResult = systemUsers?.filter((port) => {
         if (
-          (systemUsersFilter.email?.length ? systemUsersFilter.email.includes(port.email) : true) &&
-          (systemUsersFilter.isActive?.length ? systemUsersFilter.isActive?.includes(port.isActive) : true) &&
-          (systemUsersFilter.firstName?.length ? systemUsersFilter.firstName?.includes(getFullName(port)) : true) &&
-          (systemUsersFilter.role?.length ? systemUsersFilter.role?.includes(port.role.name) : true)
+          (systemUsersFilter.email?.length
+            ? systemUsersFilter.email.includes(port.email)
+            : true) &&
+          (systemUsersFilter.isActive?.length
+            ? systemUsersFilter.isActive?.includes(port.isActive)
+            : true) &&
+          (systemUsersFilter.firstName?.length
+            ? systemUsersFilter.firstName?.includes(getFullName(port))
+            : true) &&
+          (systemUsersFilter.role?.length
+            ? systemUsersFilter.role?.includes(port.role.name)
+            : true)
         ) {
           return true;
         } else {
@@ -110,7 +149,11 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
   return (
     <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
       <>
-        <FormSearch w="w-[400px]" searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
+        <FormSearch
+          w="w-[400px]"
+          searchQuery={searchQuery}
+          setsearchQuery={setsearchQuery}
+        />
         {!dataList ? (
           <SkelatonCoponent />
         ) : dataList?.length > 0 || Object.keys(systemUsersFilter)?.length ? (
@@ -119,22 +162,27 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
             customStyles={{
               rows: {
                 style: {
-                  paddingRight: "20px",
-                  style: { overflow: "visible !important" },
+                  paddingRight: '20px',
+                  style: { overflow: 'visible !important' },
                 },
               },
 
               cells: {
-                style: { overflow: "visible !important" },
+                style: { overflow: 'visible !important' },
               },
 
               responsiveWrapper: {
-                style: { overflow: "visible !important" },
+                style: { overflow: 'visible !important' },
               },
             }}
             columns={[
               {
-                name: <HemaValue text={"Name"} className="font-normal text-[#000000]" />,
+                name: (
+                  <HemaValue
+                    text={'Order Confirmation Number'}
+                    className="font-normal text-[#000000]"
+                  />
+                ),
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -145,17 +193,26 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
                         secondColumnName="lastName"
                         setRedux={setSystemUsersFilter}
                         reduxValues={systemUsersFilter || []}
-                        options={Array.from(new Set(systemUsers.map((filter) => getFullName(filter))))}
+                        options={Array.from(
+                          new Set(
+                            systemUsers.map((filter) => getFullName(filter))
+                          )
+                        )}
                       />
                     ) : (
                       <HemaValue text={getFullName(row)} />
                     )}
                   </>
                 ),
-                sortId: "firstName",
+                sortId: 'firstName',
               },
               {
-                name: <HemaValue text={"Email"} className="font-normal text-[#000000]" />,
+                name: (
+                  <HemaValue
+                    text={'Sponsor'}
+                    className="font-normal text-[#000000]"
+                  />
+                ),
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -165,17 +222,24 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
                         columnName="email"
                         setRedux={setSystemUsersFilter}
                         reduxValues={systemUsersFilter || []}
-                        options={Array.from(new Set(systemUsers.map((filter) => filter.email)))}
+                        options={Array.from(
+                          new Set(systemUsers.map((filter) => filter.email))
+                        )}
                       />
                     ) : (
                       <HemaValue text={row.email} />
                     )}
                   </>
                 ),
-                sortId: "email",
+                sortId: 'email',
               },
               {
-                name: <HemaValue text={"Role"} className="font-normal text-[#000000]" />,
+                name: (
+                  <HemaValue
+                    text={'Study Number'}
+                    className="font-normal text-[#000000]"
+                  />
+                ),
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -185,17 +249,26 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
                         columnName="role"
                         setRedux={setSystemUsersFilter}
                         reduxValues={systemUsersFilter || []}
-                        options={Array.from(new Set(systemUsers.map((filter) => filter.role?.name)))}
+                        options={Array.from(
+                          new Set(
+                            systemUsers.map((filter) => filter.role?.name)
+                          )
+                        )}
                       />
                     ) : (
                       <HemaValue text={row.role?.name} />
                     )}
                   </>
                 ),
-                sortId: "role.name",
+                sortId: 'role.name',
               },
               {
-                name: <HemaValue text={"Status"} className="font-normal text-[#000000]" />,
+                name: (
+                  <HemaValue
+                    text={'Site Code'}
+                    className="font-normal text-[#000000]"
+                  />
+                ),
                 sortable: true,
                 selector: (row, index) => (
                   <>
@@ -207,17 +280,22 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
                         boolFalseText="In-Active"
                         setRedux={setSystemUsersFilter}
                         reduxValues={systemUsersFilter || []}
-                        options={Array.from(new Set(systemUsers.map((filter) => filter.isActive)))}
+                        options={Array.from(
+                          new Set(systemUsers.map((filter) => filter.isActive))
+                        )}
                       />
                     ) : (
-                      <HemaValue text={row.isActive ? "• Active" : "• In-Active"} color={row.isActive ? "text-[#16a34a]" : "text-black"} />
+                      <HemaValue
+                        text={row.isActive ? '• Active' : '• In-Active'}
+                        color={row.isActive ? 'text-[#16a34a]' : 'text-black'}
+                      />
                     )}
                   </>
                 ),
-                sortId: "isActive",
+                sortId: 'isActive',
               },
               {
-                name: "Actions",
+                name: 'Actions',
                 cell: (row) => {
                   return (
                     <div className="flex">
@@ -229,18 +307,19 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
                           bg="bg-bgActionDots"
                           cta={() => {
                             dispatch(editFormReducer(row));
-                            Remove[0].label = "User Name";
-                            Remove[0].initialValue = row?.firstName + row?.lastName;
+                            Remove[0].label = 'User Name';
+                            Remove[0].initialValue =
+                              row?.firstName + row?.lastName;
                             setUpdatedData(Remove);
-                            setformName("Delete user");
+                            setformName('Delete user');
                             setokBtnIcon();
-                            setokBtnText("Confirm");
+                            setokBtnText('Confirm');
                             setFormIcon(<EyeIcon />);
                             dispatch(
                               setForm({
                                 state: true,
-                                type: "deleteItem",
-                              }),
+                                type: 'deleteItem',
+                              })
                             );
                             deleteSystemUser(row);
                           }}
@@ -256,7 +335,11 @@ const Rejected = ({ setCTA, setformName, setFormIcon, setUpdatedData, setokBtnTe
             ]}
             pagination
             onSort={(row, direction, sorted) => {
-              setDataList(sortedData(row.sortId, direction, sorted)?.filter((data) => Object.keys(data)?.length));
+              setDataList(
+                sortedData(row.sortId, direction, sorted)?.filter(
+                  (data) => Object.keys(data)?.length
+                )
+              );
             }}
             paginationComponent={(e) => {
               return <Pagination e={e} />;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { getFullName } from '../../pages/Settings/Utils';
 import { useDispatch } from 'react-redux';
 import { Filter } from '../../HemeIconLibrary';
 import './style.scss';
@@ -42,7 +41,8 @@ const FilterColumn = (props) => {
                     : allChecks[0]}
                 </span>
                 &nbsp; ) &nbsp;
-                {allChecks.length > 1 && '+ ' + String(allChecks.length - 1)}{' '}
+                {allChecks.length > 1 &&
+                  '+ ' + String(allChecks.length - 1)}{' '}
               </span>
             )}
           </div>
@@ -119,6 +119,5 @@ const FilterColumn = (props) => {
     </div>
   );
 };
-
 
 export default FilterColumn;
