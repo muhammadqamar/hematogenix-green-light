@@ -1,0 +1,70 @@
+.inventory-tabs {
+  .nav-tabs {
+    --bs-nav-tabs-border-width: inherit;
+    --bs-nav-tabs-border-color: inherit;
+    --bs-nav-tabs-border-radius: inherit;
+    --bs-nav-tabs-link-hover-border-color: inherit;
+    --bs-nav-tabs-link-active-color: inherit;
+    --bs-nav-tabs-link-active-bg: inherit;
+    --bs-nav-tabs-link-active-border-color: inherit;
+    border-bottom: 1px solid #f2f2f2 !important;
+
+    .nav-item {
+      .nav-link {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        color: #414753;
+        min-width: 88px;
+        padding: 4px 6px 8px 0;
+        position: relative;
+        margin-right: 16px;
+        // .title-icon svg path{
+        //   stroke: #414753 !important;
+        // }
+        &.active {
+          color: #3d88e0;
+          border-bottom: 3px solid #3d88e0;
+          padding: 4px 6px 5px 0;
+          // .title-icon svg path {
+          //   stroke: #e7006a !important;
+          //   fill: #e7006a;
+          // }
+        }
+      }
+    }
+  }
+}
+
+// Action tabs
+.action-inventory-tabs {
+  .nav-item {
+    .nav-link {
+      min-width: auto !important;
+    }
+  }
+}
+.permission-table {
+  .sc-dmXXqC.dLPHLX {
+    .sc-fLsdZI.fOcRrp {
+      .sc-beySbM.dehtZj.rdt_Table {
+        .sc-guDLRT.jnKa-Dc.rdt_TableHead {
+          .sc-dmyDGi.eYOasi.rdt_TableHeadRow {
+            .rdt_TableCol {
+              max-width: inherit !important;
+              min-width: inherit !important;
+
+              &:first-child {
+                .fpbtCN {
+                  width: 710px !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

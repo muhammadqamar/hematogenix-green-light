@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './tabs.scss';
+@import './storagelocations.scss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding: 0;
+  margin: 0;
+}
+
+body,
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #949494;
+}
+
+.hema-ellipse-dropdown {
+  .dropdown-menu {
+    width: 276px;
+  }
+
+  .dropdown-item {
+    padding: 10px 15px;
+
+    color: #232323;
+
+    &:active {
+      background: #f1f1f1;
+      color: #232323;
+    }
+  }
+}
+
+.WQNxq {
+  overflow: visible !important;
+}
+
+.hover-language-icon-delete:hover p ~ div {
+  display: block;
+}
+
+.blue-text {
+  color: blue;
+}
+
+.blue-text {
+  color: blue;
+}
+
+.bold-text {
+  font-weight: 600;
+}
+
+// shipping_table
+
+.shipping_table {
+  .check_box {
+    & input {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.kit_details_table {
+  .dLPHLX {
+    overflow: inherit !important;
+  }
+}
+
+.lower-level-tree {
+  .rct-node .rct-node-icon {
+    display: none;
+  }
+  .rct-node .rct-node-folder {
+    padding-left: 0;
+  }
+  .rct-node .rct-text {
+    margin-bottom: 14px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+    color: #232323;
+
+    .rct-title {
+      padding: 0 !important;
+    }
+    .rct-icon {
+      width: 20px;
+      height: 20px;
+    }
+    .rct-checkbox {
+      padding: 0 7px !important;
+      width: auto;
+      height: auto;
+    }
+
+    .rct-icon.rct-icon-half-check::before {
+      content: '' !important;
+      width: 20px !important;
+      height: 20px !important;
+      background-image: url('../../assets/images/sub-Toggle.svg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: block;
+    }
+
+    .rct-icon.rct-icon-uncheck::before {
+      content: '' !important;
+      width: 20px !important;
+      height: 20px !important;
+      border: 1px solid #d0d0d0;
+      border-radius: 5px;
+      display: block;
+    }
+
+    .rct-icon.rct-icon-check::before {
+      content: '' !important;
+      width: 20px !important;
+      height: 20px !important;
+      background-image: url('../../assets/images/check-toggle.svg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: block;
+    }
+  }
+}
+
+// QC-border
+
+.QC-border {
+  border: none !important;
+  border-bottom: 1px dashed #dee2e6 !important;
+}
+
+// pagination wrapper
+
+.pagination-wrapper {
+  .dropdown {
+    width: fit-content;
+    .hema-form-dropdown-custom {
+      width: auto;
+      min-width: 65px;
+      height: 40px;
+      padding: 11px 12px;
+      background: transparent;
+      border: 1px solid #dee2e6 !important;
+      box-shadow: 0px 1px 2px rgba(35, 35, 35, 0.05);
+      border-radius: 5px;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 120%;
+      .placeholderColor {
+        color: #232323 !important;
+      }
+    }
+  }
+}
+
+//  Action Checkbox
+.action_checkbox[type='radio'] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+// hemato-dropdown-btn
+
+.hemato-dropdown-btn {
+  .dropdown-toggle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 16px;
+    gap: 8px;
+    width: fit-content;
+    height: 40px;
+    background: #605daf;
+    box-shadow: 0px 1px 2px rgba(35, 35, 35, 0.05);
+    border-radius: 5px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 120%;
+    color: #ffffff;
+
+    &:hover,
+    &.show {
+      background: #605daf;
+      color: #ffffff;
+    }
+  }
+}

@@ -1,0 +1,1 @@
+export const STORAGE_LOCATION_NAME_MAXSIZE = 50;
