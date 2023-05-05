@@ -16,9 +16,8 @@ import {
 } from '../../HemeIconLibrary';
 import FormContainer from '../../components/Formik/formContainer';
 import HemaHeadingWithSubText from '../../utils/HemaHeadingWithSubText';
-import { Button, Alert, HemaValue, HemaLabel } from '../../utils';
+import { Button, Alert, HemaValue, HemaLabel, Heading } from '../../utils';
 import { getFullName } from './Utils';
-import Heading from '../logistOrchestra/logisticComponents/heading';
 import eyeIcon from '../../assets/images/eye.svg';
 import { GreenLightApproval } from '../../components/Formik/AllForms/greenLightApproval';
 

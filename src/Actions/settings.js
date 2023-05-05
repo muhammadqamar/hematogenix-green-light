@@ -1,29 +1,3 @@
-import {
-  getCompanyLocation,
-  createCompanyLocation,
-  updateCompanyLocation,
-  deleteCompanyLocation,
-  getSystemUser,
-  createSystemUser,
-  getSystemUserDownload,
-  createSystemUserUpload,
-  updateSystemUser,
-  deleteSystemUser,
-  getPortalUser,
-  createPortalUser,
-  getPortalUserDownload,
-  createPortalUserUpload,
-  getPortalUserById,
-  updatePortalUser,
-  deletePortalUser,
-  fetchUserRolesList,
-  getSiteList,
-  getPerimssion,
-  createNewRole,
-  deleteRole,
-  updateRole,
-
-} from '../Services/settings';
 import { store } from '../Store';
 import {
   setCompanyLoaction,
@@ -149,38 +123,35 @@ const getSitesAction = async () => {
 
 const getPerimssionAction = async () => {
   const result = await getPerimssion();
-  if(result.status===200){
-  store.dispatch(setPermission(result?.data || []));
+  if (result.status === 200) {
+    store.dispatch(setPermission(result?.data || []));
   }
 };
 
 const createNewRoleAction = async (data) => {
   const result = await createNewRole(data);
-  if(result.status===200){
-     store.dispatch(setaddNewRole(result?.data));
-   }
-  return result
+  if (result.status === 200) {
+    store.dispatch(setaddNewRole(result?.data));
+  }
+  return result;
 };
 
 const updateRoleAction = async (id, data) => {
   const result = await updateRole(id, data);
-  if(result.status===200){
+  if (result.status === 200) {
     store.dispatch(setupdateRole(result?.data));
   }
-  return result
+  return result;
 };
 const deleteRoleAction = async (id, reason) => {
   const result = await deleteRole(id, reason);
-  if(result.status===200){
-  store.dispatch(setdeleteRole(id));
+  if (result.status === 200) {
+    store.dispatch(setdeleteRole(id));
   }
-  return result
+  return result;
 };
 
-
-
 export {
-
   updateRoleAction,
   deleteRoleAction,
   createNewRoleAction,

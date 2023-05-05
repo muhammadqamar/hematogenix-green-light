@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux';
 import { Alert } from '../../utils';
 import { setForm, showErrorReducer } from '../../Store/reducers/uiSettings';
 import { useSelector } from 'react-redux';
-import StorageLocationForm from './CustomForms/StorageExporer';
 
 const FormikForm = ({
   data,
@@ -193,14 +192,6 @@ const FormikForm = ({
             className="max-w-[600px] overflow-auto m-auto pr-4 flex flex-col  h-[calc(100%-50px)] justify-between"
           >
             <div className="flex flex-wrap w-full gap-[16px] ">
-              {showStorage && (
-                <div className="absolute top-[170px] z-30 h-screen w-full bg-white ">
-                  <StorageLocationForm
-                    controller={formikRef}
-                    setShowStorage={setShowStorage}
-                  />
-                </div>
-              )}
               {data?.map((fields, counter) => {
                 return (
                   <div

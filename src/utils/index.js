@@ -9,15 +9,15 @@ import FormSearch from './FormElements/searchbar';
 import Alert from './Alert';
 import HemaHeadingWithSubText from './HemaHeadingWithSubText';
 import LocationExplorer from './Explorer/LocationExplorer';
-
 import FormMultiSelect from './FormElements/multiSelect';
 import SingleSelect from './FormElements/singleSelect';
 import HemaCard from './HemaCard';
 import Pagination from './Pagination';
 import FilterColumn from './Filter';
 import KitpreparationTable from './kitPreparationTable';
-
 import ItemAssigner from './ItemAssigner';
+import Heading from './Heading';
+
 export {
   ItemAssigner,
   FilterColumn,
@@ -37,4 +37,5 @@ export {
   SingleSelect,
   HemaCard,
   KitpreparationTable,
+  Heading,
 };
