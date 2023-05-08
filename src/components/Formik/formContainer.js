@@ -2,27 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Transition, CSSTransition } from 'react-transition-group';
 import { useSelector } from 'react-redux';
-import { setForm } from '../../Store/reducers/uiSettings';
-import { Back, Add } from '../../HemeIconLibrary';
-import HemaForm from '../../components/Formik';
-import { FormTitle, Button } from '../../utils';
-const duration = 300;
+import { Spinner } from 'react-bootstrap';
+import {
+  approveAction,
+  rejectAction,
+  getAllOrderAction,
+} from '../../Action/order';
 
-// const defaultStyle = {
-//   transition: `opacity ${duration}ms ease-in-out`,
-//   minWidth: '600px',
-// };
+import { Back, Add, Cancel, Confirm } from '../../HemeIconLibrary';
+import { Formik } from 'formik';
+import { FormTitle, Button, Alert, HemaLabel, FormTextarea } from '../../utils';
+//import { showSuccessReducer } from '../../commonStore/reducers/uiSettings';
 
-// const transitionStyles = {
-//   entering: { minWidth: '600px' },
-//   entered: { minWidth: '600px' },
-//   exiting: { minWidth: '0px' },
-//   exited: { minWidth: '0px' },
-// };
 export const FormContainer = (props) => {
   const dispatch = useDispatch();
-  const { cta, formType, formName, Icon, formValidation, in: inProp } = props;
-  const { uisettings } = useSelector((state) => state);
+  const { setgreenLightAction, approve, setShowDetial } = props;
+  const { uisettings, orders } = useSelector((state) => state);
   const nodeRef = useRef(null);
   const [formTransition, setformTransition] = useState(false);
   useEffect(() => {
@@ -32,38 +27,151 @@ export const FormContainer = (props) => {
   }, [props]);
   return (
     <div className="h-full z-10 bg-[#000000c4] border-[#DEE2E6] fixed top-0 left-0 w-full flex justify-end  ">
-      <div className={`bg-white screen-height transition-all ${formTransition ? 'w-[600px]' : 'w-0'}`}>
+      <div
+        className={`bg-white screen-height transition-all ${
+          formTransition ? 'w-[600px]' : 'w-0'
+        }`}
+      >
         <div className=" px-4 py-2 h-[70px] flex items-center bg-primary1  border-b">
           <div
             className="cursor-pointer"
             onClick={() => {
-              if (props.onFormClose) {
-                props.onFormClose();
-              }
-              dispatch(setForm(false));
+              setgreenLightAction(false);
             }}
           >
             <Back />
           </div>
         </div>
         <div className="h-[calc(100%-75px)] px-4 py-8 overflow-auto ">
-                {uisettings?.formName === 'addInventory1stStep' ?
-            <div className="flex justify-between pb-[25px]">
-                    <FormTitle Icon={Icon} text={formName} />
-                    <Button
-                      text="Create New Item"
-                      Icon={<Add color="white" />}
-                      color="text-white"
-                      bg="bg-primary1"
-                      cta={() => {
-                        props.callCreateNewItem();
-                      }}
-                    />
-                  </div> : <div className="pb-[25px]">
-              <FormTitle Icon={Icon} text={formName} />
-            </div>}
+          <div className="pb-[25px]">
+            <FormTitle
+              Icon={approve ? Back : Back}
+              text={approve ? 'Approve' : 'Reject'}
+            />
+          </div>
+          <Formik
+            initialValues={{
+              note: '',
+            }}
+            enableReinitialize
+            validate={(values) => {
+              const errors = {};
+              if (!values.note) {
+                errors.note = 'Required';
+              }
 
-          <HemaForm data={formType} cta={cta} formValidation={formValidation} formName={formName} {...props} />
+              return errors;
+            }}
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
+              if (approve) {
+                const result = await approveAction(
+                  orders?.activeOrder.id,
+                  values
+                );
+                if (result.status === 200) {
+                  await getAllOrderAction();
+                  setSubmitting(false);
+
+                  //  dispatch(showSuccessReducer('Green Light Approved'))
+                  setgreenLightAction(false);
+                  setShowDetial(false)
+                }
+              } else {
+                const result = await rejectAction(
+                  orders?.activeOrder.id,
+                  values
+                );
+                if (result.status === 200) {
+                  await getAllOrderAction();
+                  setSubmitting(false);
+                  // dispatch(showSuccessReducer('Green Light rejected'))
+                  setgreenLightAction(false);
+                  setShowDetial(false)
+                }
+              }
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+              isSubmitting,
+              /* and other goodies */
+            }) => (
+              <form
+                onSubmit={handleSubmit}
+                className="max-w-[600px]  overflow-auto m-auto flex flex-col justify-between h-[calc(100%-100px)]"
+              >
+                <div>
+                  <div className={'w-full'}>
+                    <div className="mb-[30px]">
+                      <HemaLabel
+                        text={'Comments'}
+                        Icon={<Add />}
+                        required={true}
+                        className={`mb-[10px]`}
+                      />
+                      <FormTextarea
+                        name={'note'}
+                        placeholder="Enter detail"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.note}
+                      />
+                    </div>
+
+                    {errors.note && touched.note && (
+                      <div className="error text-[red] text-[12px] pt-[2px]">
+                        {errors.note}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <Alert type="error" />
+                <div className="flex gap-[8px] justify-end my-[20px]">
+                  <Button
+                    cta={() => {
+                      setgreenLightAction(false);
+                    }}
+                    type="button"
+                    text="Cancel"
+                    bg="bg-white"
+                    border="border-primary1"
+                    color="text-primary1"
+                    Icon={<Cancel />}
+                  />
+
+                  {isSubmitting ? (
+                    <Button
+                      type="submit"
+                      bg="bg-primary1"
+                      text={
+                        <>
+                          <Spinner animation="grow" size="sm" variant="light" />
+                          <Spinner animation="grow" size="sm" variant="light" />
+                          <Spinner animation="grow" size="sm" variant="light" />
+                        </>
+                      }
+                    />
+                  ) : (
+                    <Button
+                      type="submit"
+                      text="Save"
+                      bg="bg-primary1"
+                      color="text-white"
+                      Icon={<Confirm />}
+                    />
+                  )}
+                </div>
+              </form>
+            )}
+          </Formik>
         </div>
       </div>
     </div>

@@ -1,77 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tab, Tabs } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
-
+import { useSearchParams } from 'react-router-dom';
 import {
   Assemblies,
   Cancel,
-  CheckApprove,
   CheckReady,
   Confirm,
   CrossIcon,
-  EyeIcon,
   Pending,
-  Reject,
 } from '../../HemeIconLibrary';
 import FormContainer from '../../components/Formik/formContainer';
 import HemaHeadingWithSubText from '../../utils/HemaHeadingWithSubText';
 import { Button, Alert, HemaValue, HemaLabel, Heading } from '../../utils';
-import { getFullName } from './Utils';
+import { getAllOrderAction } from '../../Action/order';
 import eyeIcon from '../../assets/images/eye.svg';
-import { GreenLightApproval } from '../../components/Formik/AllForms/greenLightApproval';
-
-
-import {
-  setForm,
-  setFormCloseReducer,
-  showSuccessReducer,
-  editFormReducer,
-  setFormLoaderReducer,
-} from '../../Store/reducers/uiSettings';
 
 // Components
 import AllApproval from './All';
-import PendingUser from './Pending';
-import Approved from './Approved';
-import Rejected from './Rejected';
-
-const data = [
-  {
-    name: 'ali',
-  },
-
-  {
-    name: 'ali',
-  },
-];
+// import PendingUser from './Pending';
+// import Approved from './Approved';
+// import Rejected from './Rejected';
 
 const LightApproval = () => {
   const dispatch = useDispatch();
-  const { uisettings, settings } = useSelector((state) => state);
-
-  /* form states */
-  const [CTA, setCTA] = useState();
-  const [formName, setformName] = useState();
-  const [formIcon, setFormIcon] = useState();
-  const [formValidation, setFormValidation] = useState();
-  const [updatedData, setUpdatedData] = useState();
-  const [activeTab, setactiveTab] = useState('CompanyLocation');
+  const { orders } = useSelector((state) => state);
+  const [greenLightAction, setgreenLightAction] = useState(false);
+  const [approve, setApprove] = useState(false);
   const [pageSub, setPageSub] = useState(
     'Manage your green light approval here.'
   );
-  const [allItemsInTemplate, setAllItemsInTemplate] = useState();
-  const [dropdownItemList, setDropDownItemList] = useState();
-  const [editRole, setEditRole] = useState(false);
-  const [okBtnText, setokBtnText] = useState();
-  const [okBtnIcon, setokBtnIcon] = useState();
-  const [cancelBtnText, setCancelBtnText] = useState();
-  const [cancelBtnIcon, setSancelBtnIcon] = useState()
 
+  const [showDetail, setShowDetial] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    localStorage.setItem('green-light-auth',searchParams.get('auth')); // 'name'
+
+    getAllOrderAction();
+  }, [searchParams]);
 
   return (
     <>
-      <div className={`${editRole ? 'hidden' : 'block'}`}>
+      <div className={`block`}>
         <div className="flex gap-[10px] justify-between items-end">
           <HemaHeadingWithSubText
             heading="Green Light Approval"
@@ -79,280 +51,212 @@ const LightApproval = () => {
           />
         </div>
         <Alert />
-        <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
-          <Tabs
-            defaultActiveKey="CompanyLocation"
-            id="uncontrolled-tab-example"
-            className="mb-3 gap-[20px]"
-            onSelect={(key) => {
-              setactiveTab(key);
-              if (key === 'CompanyLocation') {
-                setPageSub('Manage your green light approval here.');
-              } else if (key === 'SystemUser') {
-                setPageSub('Manage your green light approval here.');
-              } else if (key === 'PortalUser') {
-                setPageSub('Manage your green light approval here.');
-              } else if (key === 'RoleManagment') {
-                setPageSub('Manage your green light approval here.');
-              } else {
-                setPageSub('');
-              }
-            }}
-          >
-            <Tab
-              eventKey="CompanyLocation"
-              title={
-                <div className="flex items-center title-icon gap-[10px]">
-                  <Assemblies />
-                  All
-                </div>
-              }
+        {!showDetail ? (
+          <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
+            <Tabs
+              defaultActiveKey="CompanyLocation"
+              id="uncontrolled-tab-example"
+              className="mb-3 gap-[20px]"
             >
-              <AllApproval
-                setokBtnIcon={setokBtnIcon}
-                setokBtnText={setokBtnText}
-                setCTA={setCTA}
-                setformName={setformName}
-                setFormIcon={setFormIcon}
-                setUpdatedData={setUpdatedData}
-              />
-            </Tab>
+              <Tab
+                eventKey="CompanyLocation"
+                title={
+                  <div className="flex items-center title-icon gap-[10px]">
+                    <Assemblies />
+                    All
+                  </div>
+                }
+              >
+                <AllApproval
+                  setShowDetial={setShowDetial}
+                  data={orders.allOrders}
+                />
+              </Tab>
 
-            <Tab
-              eventKey="SystemUser"
-              title={
-                <div className="flex items-center title-icon gap-[10px]">
-                  <Pending />
-                  Pending
-                </div>
-              }
-            >
-              <PendingUser
-                setokBtnIcon={setokBtnIcon}
-                setokBtnText={setokBtnText}
-                setCTA={setCTA}
-                setformName={setformName}
-                setFormIcon={setFormIcon}
-                setUpdatedData={setUpdatedData}
-              />
-            </Tab>
+              <Tab
+                eventKey="SystemUser"
+                title={
+                  <div className="flex items-center title-icon gap-[10px]">
+                    <Pending />
+                    Pending
+                  </div>
+                }
+              >
+                <AllApproval
+                  setShowDetial={setShowDetial}
+                  data={
+                    orders.allOrders?.filter(
+                      (data) => data?.status?.id === 2
+                    ) || []
+                  }
+                />
+              </Tab>
 
-            <Tab
-              eventKey="PortalUser"
-              title={
-                <div className="flex items-center title-icon gap-[10px] ">
-                  <CheckReady /> Approved
-                </div>
-              }
-            >
-              <Approved
-                setokBtnIcon={setokBtnIcon}
-                setokBtnText={setokBtnText}
-                sites={settings?.sites}
-                setCTA={setCTA}
-                setformName={setformName}
-                setFormIcon={setFormIcon}
-                setUpdatedData={setUpdatedData}
-              />
-            </Tab>
+              <Tab
+                eventKey="PortalUser"
+                title={
+                  <div className="flex items-center title-icon gap-[10px] ">
+                    <CheckReady /> Approved
+                  </div>
+                }
+              >
+                <AllApproval
+                  setShowDetial={setShowDetial}
+                  data={orders.allOrders?.filter(
+                    (data) => data?.status?.id === 3
+                  )}
+                />
+              </Tab>
 
-            <Tab
-              eventKey="RoleManagment"
-              title={
-                <div className="flex items-center title-icon gap-[10px] ">
-                  <CrossIcon color="#414753" /> Rejected
+              <Tab
+                eventKey="RoleManagment"
+                title={
+                  <div className="flex items-center title-icon gap-[10px] ">
+                    <CrossIcon color="#414753" /> Rejected
+                  </div>
+                }
+              >
+                <AllApproval
+                  setShowDetial={setShowDetial}
+                  data={orders.allOrders?.filter(
+                    (data) => data?.status?.id === 4
+                  )}
+                />
+              </Tab>
+            </Tabs>
+          </div>
+        ) : (
+          <div className="w-full mt-[30px]">
+            <div className="w-full rounded-[5px] bg-white pt-[24px] pb-[16px] mb-[10px]">
+              <div className=" w-full px-[16px]">
+                <Heading heading="Details" />
+                <div className="flex items-center justify-between  pr-[120px] mt-[21px] mb-[32px]">
+                  <div className="flex items-center gap-[20px]">
+                    <HemaLabel text="Order Confirmation Number" />
+                    <HemaValue
+                      text={orders?.activeOrder?.shipment?.order?.orderCode}
+                    />
+                  </div>
+                  <div className="flex items-center gap-[20px]">
+                    <HemaLabel text="Sponsor" />
+                    <HemaValue
+                      text={orders?.activeOrder?.shipment?.sponsor?.name}
+                    />
+                  </div>
+                  <div className="flex items-center gap-[20px]">
+                    <HemaLabel text="Study Name" />
+                    <HemaValue
+                      text={orders?.activeOrder?.shipment?.studyName}
+                    />
+                  </div>
+                  <div className="flex items-center gap-[20px] ">
+                    <HemaLabel text="Site Code" />
+                    <HemaValue text={orders?.activeOrder?.shipment?.SiteCode} />
+                  </div>
                 </div>
-              }
-            >
-              <Rejected
-                setokBtnIcon={setokBtnIcon}
-                setokBtnText={setokBtnText}
-                setCTA={setCTA}
-                setformName={setformName}
-                setFormIcon={setFormIcon}
-                setUpdatedData={setUpdatedData}
-                setEditRole={setEditRole}
-              />
-            </Tab>
-          </Tabs>
-        </div>
-
-        {/* detail section */}
-        <div className="w-full">
-          <div className="w-full rounded-[5px] bg-white pt-[24px] pb-[16px] mb-[10px]">
-            <div className=" w-full px-[16px]">
-              <Heading heading="Details" />
-              <div className="flex items-center justify-between  pr-[120px] mt-[21px] mb-[32px]">
-                <div className="flex items-center gap-[20px]">
-                  <HemaLabel text="Order Confirmation Number" />
-                  <HemaValue text="2280" />
-                </div>
-                <div className="flex items-center gap-[20px]">
-                  <HemaLabel text="Sponsor" />
-                  <HemaValue text="Pfizer" />
-                </div>
-                <div className="flex items-center gap-[20px]">
-                  <HemaLabel text="Study Number" />
-                  <HemaValue text="ARC-101 ARM 1" />
-                </div>
-                <div className="flex items-center gap-[20px] ">
-                  <HemaLabel text="Site Code" />
-                  <HemaValue text="001" />
-                </div>
+                <Heading heading="Documents" border />
               </div>
-              <Heading heading="Documents" border />
-            </div>
-            <div className="w-full border-t-[1px] border-b-[1px] border-solid border-[#DEE2E6]">
-              <DataTable
-                data={data}
-                customStyles={{
-                  rows: {
-                    style: {
-                      paddingRight: '20px',
+              <div className="w-full border-t-[1px] border-b-[1px] border-solid border-[#DEE2E6]">
+                <DataTable
+                  data={orders?.activeOrder?.files || []}
+                  customStyles={{
+                    rows: {
+                      style: {
+                        paddingRight: '20px',
+                        style: { overflow: 'visible !important' },
+                      },
+                    },
+
+                    cells: {
                       style: { overflow: 'visible !important' },
                     },
-                  },
 
-                  cells: {
-                    style: { overflow: 'visible !important' },
-                  },
-
-                  responsiveWrapper: {
-                    style: { overflow: 'visible !important' },
-                  },
-                }}
-                columns={[
-                  {
-                    name: (
-                      <HemaValue
-                        text={'Name'}
-                        className="font-normal text-[#000000]"
-                      />
-                    ),
-                    sortable: true,
-                    filterable: true,
-                    selector: (row, index) => (
-                      <>
-                        <HemaValue text={row.name || 'Airway Bill'} />
-                      </>
-                    ),
-                    sortId: 'firstName',
-                  },
-                  {
-                    name: (
-                      <HemaValue
-                        text={'Action'}
-                        className="font-normal text-[#000000]"
-                      />
-                    ),
-                    cell: (row) => {
-                      return (
-                        <div className="flex">
-                          <div className="flex w-[100px] justify-end meta">
-                            <Button
-                              Icon={<img src={eyeIcon} alt="" />}
-                              padding={false}
-                              color="text-[#dc2626]"
-                              bg="bg-bgActionDots"
-                              cta={() => {
-                                dispatch(editFormReducer(row));
-
-                                setformName('Delete user');
-                                setokBtnIcon();
-                                setokBtnText('Confirm');
-                                setFormIcon(<EyeIcon />);
-                                dispatch(
-                                  setForm({
-                                    state: true,
-                                    type: 'deleteItem',
-                                  })
-                                );
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
+                    responsiveWrapper: {
+                      style: { overflow: 'visible !important' },
                     },
-                    ignoreRowClick: true,
-                    allowOverflow: true,
-                    button: true,
-                  },
-                ]}
-              />
+                  }}
+                  columns={[
+                    {
+                      name: (
+                        <HemaValue
+                          text={'Name'}
+                          className="font-normal text-[#000000]"
+                        />
+                      ),
+                      sortable: true,
+                      filterable: true,
+                      selector: (row, index) => (
+                        <>
+                          <HemaValue text={row.friendlyName} />
+                        </>
+                      ),
+                      sortId: 'firstName',
+                    },
+                    {
+                      name: (
+                        <HemaValue
+                          text={'Action'}
+                          className="font-normal text-[#000000]"
+                        />
+                      ),
+                      cell: (row) => {
+                        return (
+                          <div className="flex">
+                            <div className="flex w-[100px] justify-end meta">
+                              <Button
+                                Icon={<img src={eyeIcon} alt="" />}
+                                padding={false}
+                                color="text-[#dc2626]"
+                                bg="bg-bgActionDots"
+                              />
+                            </div>
+                          </div>
+                        );
+                      },
+                      ignoreRowClick: true,
+                      allowOverflow: true,
+                      button: true,
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div className="w-full rounded-[5px] bg-white px-[16px] py-[21px]">
+              <div className="flex items-center justify-end w-full gap-2">
+                <Button
+                  Icon={<Cancel />}
+                  text="Reject"
+                  color="text-[#605DAF]"
+                  bg="bg-white"
+                  border="border-[2px] border-solid border-[#605DAF]"
+                  cta={() => {
+                    setgreenLightAction(true);
+                    setApprove(false);
+                  }}
+                />
+                <Button
+                  Icon={<Confirm />}
+                  text="Approve"
+                  color="text-white"
+                  bg="bg-[#605DAF]"
+                  cta={() => {
+                    setgreenLightAction(true);
+                    setApprove(true);
+                  }}
+                />
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="w-full rounded-[5px] bg-white px-[16px] py-[21px]">
-            <div className="flex items-center justify-end w-full gap-2">
-              <Button
-                Icon={<Cancel />}
-                text="Reject"
-                color="text-[#605DAF]"
-                bg="bg-white"
-                border="border-[2px] border-solid border-[#605DAF]"
-                cta={() => {
-                  GreenLightApproval[0].initialValue = '';
-                  setUpdatedData(GreenLightApproval);
-                  setformName('Reject');
-                  setokBtnIcon();
-                  setokBtnText('Submit');
-                  setFormIcon(<Reject />);
-                  dispatch(
-                    setForm({
-                      state: true,
-                      type: 'green-reject',
-                    })
-                  );
-                }}
-              />
-              <Button
-                Icon={<Confirm />}
-                text="Approve"
-                color="text-white"
-                bg="bg-[#605DAF]"
-                cta={() => {
-                  GreenLightApproval[0].initialValue = '';
-                  setUpdatedData(GreenLightApproval);
-                  setformName('Approve');
-                  setokBtnIcon();
-                  setokBtnText('Submit');
-                  setFormIcon(<CheckApprove />);
-                  dispatch(
-                    setForm({
-                      state: true,
-                      type: 'green-approve',
-                    })
-                  );
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {uisettings?.openform && (
+        {greenLightAction && (
           <FormContainer
-            cta={CTA}
-            formType={updatedData}
-            formName={formName}
-            Icon={formIcon}
-            formValidation={formValidation}
-            setUpdatedData={setUpdatedData}
-            setformName={setformName}
-            setFormIcon={setFormIcon}
-            allItemsInTemplate={allItemsInTemplate}
-            dropDownItemList={dropdownItemList}
-            cancelBtnIcon={cancelBtnIcon}
-            cancelBtnText={cancelBtnText}
-            okBtnIcon={okBtnIcon}
-            okBtnText={okBtnText}
-            setokBtnIcon={setokBtnIcon}
-            setokBtnText={setokBtnText}
+            setShowDetial={setShowDetial}
+            setgreenLightAction={setgreenLightAction}
+            approve={approve}
           />
         )}
-      </div>
-
-      <div className={`${!editRole ? 'hidden' : 'block'}`}>
-        {/* <AddRole setEditRole={setEditRole} /> */}
       </div>
     </>
   );

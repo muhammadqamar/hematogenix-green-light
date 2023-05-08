@@ -4,7 +4,7 @@ import { Alert as BootstrapAlert } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import Skeleton from 'react-loading-skeleton';
 import { filter } from 'smart-array-filter';
-import { setSystemUsersFilter } from '../../../Store/reducers/settings';
+import { setAllFilter } from '../../../Store/reducers/orders';
 import {
   Button,
   FormSearch,
@@ -12,68 +12,44 @@ import {
   Pagination,
   FilterColumn,
 } from '../../../utils';
-import {
-  AddInventory,
-  DeleteInventory,
-  DeletePurple,
-  EditColor,
-  SearchColor,
-  ExpiryAlertPurple,
-  EyeIcon,
-} from '../../../HemeIconLibrary';
+
 import eyeIcon from '../../../assets/images/eye.svg';
-import { createUserField } from '../../../components/Formik/AllForms/addUserFields';
-import { Remove } from '../../../components/Formik/AllForms/remove';
+import { getDetailRecordIdAction } from '../../../Action/order';
 import { sortedData } from '../../../helpers/sort';
-import {
-  setForm,
-  editFormReducer,
-  setFormCloseReducer,
-  showSuccessReducer,
-  setFormLoaderReducer,
-} from '../../../Store/reducers/uiSettings';
-
-
 
 // Utils
 import { getFullName } from '../Utils';
 
 // assets
 
-const All = ({
-  setCTA,
-  setformName,
-  setFormIcon,
-  setUpdatedData,
-  setokBtnText,
-  setokBtnIcon,
-}) => {
+const All = ({ setShowDetial, data }) => {
   const dispatch = useDispatch();
-  const { settings } = useSelector((state) => state);
-  const { systemUsers, systemUsersFilter } = settings;
-
+  const { settings, orders } = useSelector((state) => state);
 
   const [searchQuery, setsearchQuery] = useState('');
   const [dataList, setDataList] = useState(null);
 
-  //search for location
   useEffect(() => {
-    (async () => {
-      if (searchQuery) {
-        const filteredDataResult = filter(systemUsers, {
-          keywords: searchQuery, // search for any field that contains the "Do" string
+    if (data) {
 
-          caseSensitive: false,
-        });
-        setDataList(filteredDataResult);
-      } else {
-        setDataList(systemUsers);
-      }
-    })();
-  }, [searchQuery, systemUsers]);
+      setDataList(data || []);
+    }
+  }, [data]);
+  //search for location
+  // useEffect(() => {
+  //   (async () => {
+  //     if (searchQuery) {
+  //       const filteredDataResult = filter(systemUsers, {
+  //         keywords: searchQuery, // search for any field that contains the "Do" string
 
-
-
+  //         caseSensitive: false,
+  //       });
+  //       setDataList(filteredDataResult);
+  //     } else {
+  //       setDataList(orders.allOrders);
+  //     }
+  //   })();
+  // }, [searchQuery, orders.allOrders]);
 
   const SkelatonCoponent = () => {
     return (
@@ -89,33 +65,33 @@ const All = ({
     );
   };
 
-  useEffect(() => {
-    if (Object.keys(systemUsersFilter)?.length) {
-      const filterResult = systemUsers?.filter((port) => {
-        if (
-          (systemUsersFilter.email?.length
-            ? systemUsersFilter.email.includes(port.email)
-            : true) &&
-          (systemUsersFilter.isActive?.length
-            ? systemUsersFilter.isActive?.includes(port.isActive)
-            : true) &&
-          (systemUsersFilter.firstName?.length
-            ? systemUsersFilter.firstName?.includes(getFullName(port))
-            : true) &&
-          (systemUsersFilter.role?.length
-            ? systemUsersFilter.role?.includes(port.role.name)
-            : true)
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      setDataList(filterResult);
-    } else {
-      setDataList(systemUsers);
-    }
-  }, [JSON.stringify(systemUsersFilter)]);
+  // useEffect(() => {
+  //   if (Object.keys(systemUsersFilter)?.length) {
+  //     const filterResult = systemUsers?.filter((port) => {
+  //       if (
+  //         (systemUsersFilter.email?.length
+  //           ? systemUsersFilter.email.includes(port.email)
+  //           : true) &&
+  //         (systemUsersFilter.isActive?.length
+  //           ? systemUsersFilter.isActive?.includes(port.isActive)
+  //           : true) &&
+  //         (systemUsersFilter.firstName?.length
+  //           ? systemUsersFilter.firstName?.includes(getFullName(port))
+  //           : true) &&
+  //         (systemUsersFilter.role?.length
+  //           ? systemUsersFilter.role?.includes(port.role.name)
+  //           : true)
+  //       ) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     });
+  //     setDataList(filterResult);
+  //   } else {
+  //    // setDataList(systemUsers);
+  //   }
+  // }, [JSON.stringify(systemUsersFilter)]);
   return (
     <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
       <>
@@ -126,7 +102,7 @@ const All = ({
         />
         {!dataList ? (
           <SkelatonCoponent />
-        ) : dataList?.length > 0 || Object.keys(systemUsersFilter)?.length ? (
+        ) : dataList?.length > 0 ? (
           <DataTable
             data={[{}, ...dataList]}
             customStyles={{
@@ -159,18 +135,18 @@ const All = ({
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                        columnName="firstName"
-                        secondColumnName="lastName"
-                        setRedux={setSystemUsersFilter}
-                        reduxValues={systemUsersFilter || []}
-                        options={Array.from(
-                          new Set(
-                            systemUsers.map((filter) => getFullName(filter))
-                          )
-                        )}
+                      // columnName="firstName"
+                      // secondColumnName="lastName"
+                      // setRedux={setAllFilter}
+                      // reduxValues={systemUsersFilter || []}
+                      // options={Array.from(
+                      //   new Set(
+                      //     systemUsers?.map((filter) => getFullName(filter))
+                      //   )
+                      // )}
                       />
                     ) : (
-                      <HemaValue text={getFullName(row)} />
+                      <HemaValue text={row?.shipment?.order?.orderCode} />
                     )}
                   </>
                 ),
@@ -189,15 +165,15 @@ const All = ({
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                        columnName="email"
-                        setRedux={setSystemUsersFilter}
-                        reduxValues={systemUsersFilter || []}
-                        options={Array.from(
-                          new Set(systemUsers.map((filter) => filter.email))
-                        )}
+                      // columnName="email"
+                      // setRedux={setAllFilter}
+                      // reduxValues={systemUsersFilter || []}
+                      // options={Array.from(
+                      //   new Set(systemUsers?.map((filter) => filter.email))
+                      // )}
                       />
                     ) : (
-                      <HemaValue text={row.email} />
+                      <HemaValue text={row?.shipment?.sponsor?.name}/>
                     )}
                   </>
                 ),
@@ -206,7 +182,7 @@ const All = ({
               {
                 name: (
                   <HemaValue
-                    text={'Study Number'}
+                    text={'Study Name'}
                     className="font-normal text-[#000000]"
                   />
                 ),
@@ -216,17 +192,17 @@ const All = ({
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                        columnName="role"
-                        setRedux={setSystemUsersFilter}
-                        reduxValues={systemUsersFilter || []}
-                        options={Array.from(
-                          new Set(
-                            systemUsers.map((filter) => filter.role?.name)
-                          )
-                        )}
+                      // columnName="role"
+                      // setRedux={setAllFilter}
+                      // reduxValues={systemUsersFilter || []}
+                      // options={Array.from(
+                      //   new Set(
+                      //     systemUsers?.map((filter) => filter.role?.name)
+                      //   )
+                      // )}
                       />
                     ) : (
-                      <HemaValue text={row.role?.name} />
+                      <HemaValue text={row?.shipment?.studyName} />
                     )}
                   </>
                 ),
@@ -235,7 +211,7 @@ const All = ({
               {
                 name: (
                   <HemaValue
-                    text={'Site Code'}
+                    text={'Study Code'}
                     className="font-normal text-[#000000]"
                   />
                 ),
@@ -244,20 +220,20 @@ const All = ({
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                        columnName="isActive"
-                        type="boolean"
-                        boolTrueText="Active"
-                        boolFalseText="In-Active"
-                        setRedux={setSystemUsersFilter}
-                        reduxValues={systemUsersFilter || []}
-                        options={Array.from(
-                          new Set(systemUsers.map((filter) => filter.isActive))
-                        )}
+                      // columnName="isActive"
+                      // type="boolean"
+                      // boolTrueText="Active"
+                      // boolFalseText="In-Active"
+                      // setRedux={setAllFilter}
+                      // reduxValues={systemUsersFilter || []}
+                      // options={Array.from(
+                      //   new Set(systemUsers?.map((filter) => filter.isActive))
+                      // )}
                       />
                     ) : (
                       <HemaValue
-                        text={row.isActive ? '• Active' : '• In-Active'}
-                        color={row.isActive ? 'text-[#16a34a]' : 'text-black'}
+                        text={row.shipment?.studyCode}
+
                       />
                     )}
                   </>
@@ -276,20 +252,20 @@ const All = ({
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                        columnName="isActive"
-                        type="boolean"
-                        boolTrueText="Active"
-                        boolFalseText="In-Active"
-                        setRedux={setSystemUsersFilter}
-                        reduxValues={systemUsersFilter || []}
-                        options={Array.from(
-                          new Set(systemUsers.map((filter) => filter.isActive))
-                        )}
+                      // columnName="isActive"
+                      // type="boolean"
+                      // boolTrueText="Active"
+                      // boolFalseText="In-Active"
+                      // setRedux={setAllFilter}
+                      // reduxValues={systemUsersFilter || []}
+                      // options={Array.from(
+                      //   new Set(systemUsers?.map((filter) => filter.isActive))
+                      // )}
                       />
                     ) : (
                       <HemaValue
-                        text={row.isActive ? '• Active' : '• In-Active'}
-                        color={row.isActive ? 'text-[#16a34a]' : 'text-black'}
+                        text={row.status?.name}
+
                       />
                     )}
                   </>
@@ -298,8 +274,10 @@ const All = ({
               },
               {
                 name: 'Actions',
-                cell: (row) => {
-                  return (
+                selector: (row, index) =>
+                  index === 0 ? (
+                    <></>
+                  ) : (
                     <div className="flex">
                       <div className="flex w-[100px] justify-end meta">
                         <Button
@@ -307,29 +285,19 @@ const All = ({
                           padding={false}
                           color="text-[#dc2626]"
                           bg="bg-bgActionDots"
-                          cta={() => {
-                            // dispatch(editFormReducer(row));
-                            // Remove[0].label = 'User Name';
-                            // Remove[0].initialValue =
-                            //   row?.firstName + row?.lastName;
-                            // setUpdatedData(Remove);
-                            // setformName('Delete user');
-                            // setokBtnIcon();
-                            // setokBtnText('Confirm');
-                            // setFormIcon(<EyeIcon />);
-                            dispatch(
-                              setForm({
-                                state: true,
-                                type: 'deleteItem',
-                              })
+                          cta={async () => {
+                            const result = await getDetailRecordIdAction(
+                              row.id
                             );
-
+                            if (result.status === 200) {
+                              setShowDetial(true);
+                            }
                           }}
                         />
                       </div>
                     </div>
-                  );
-                },
+                  ),
+
                 ignoreRowClick: true,
                 allowOverflow: true,
                 button: true,
@@ -349,7 +317,7 @@ const All = ({
           />
         ) : (
           <BootstrapAlert variant="warning" className="mt-3 text-center">
-            No System User to show. Please add by clicking on Add New User.
+            No records available.
           </BootstrapAlert>
         )}
       </>
