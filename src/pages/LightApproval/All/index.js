@@ -1,40 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Alert as BootstrapAlert } from 'react-bootstrap';
-import DataTable from 'react-data-table-component';
-import Skeleton from 'react-loading-skeleton';
-import { filter } from 'smart-array-filter';
-import { setAllFilter } from '../../../Store/reducers/orders';
-import {
-  Button,
-  FormSearch,
-  HemaValue,
-  Pagination,
-  FilterColumn,
-} from '../../../utils';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Alert as BootstrapAlert } from "react-bootstrap";
+import DataTable from "react-data-table-component";
+import Skeleton from "react-loading-skeleton";
+import { filter } from "smart-array-filter";
+import { setAllFilter } from "../../../Store/reducers/orders";
+import { Button, FormSearch, HemaValue, Pagination, FilterColumn } from "../../../utils";
 
-import eyeIcon from '../../../assets/images/eye.svg';
-import { getDetailRecordIdAction } from '../../../Action/order';
-import { sortedData } from '../../../helpers/sort';
+import binocularIcon from "../../../assets/images/binocular.svg";
+import { getDetailRecordIdAction } from "../../../Action/order";
+import { sortedData } from "../../../helpers/sort";
 
 // Utils
-import { getFullName } from '../Utils';
+import { getFullName } from "../Utils";
 
 // assets
 
 const All = ({ setShowDetial, data }) => {
   const dispatch = useDispatch();
   const { settings, orders } = useSelector((state) => state);
-
-  const [searchQuery, setsearchQuery] = useState('');
+  const [searchQuery, setsearchQuery] = useState("");
   const [dataList, setDataList] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
 
   useEffect(() => {
     if (data) {
-
       setDataList(data || []);
     }
   }, [data]);
+
+  // Search Green light ...
+  useEffect(() => {
+    const searchdataList = dataList?.filter((item) => item?.shipment?.sponsor?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    setSearchResult(searchdataList);
+  }, [dataList, searchQuery]);
+
   //search for location
   // useEffect(() => {
   //   (async () => {
@@ -95,40 +95,31 @@ const All = ({ setShowDetial, data }) => {
   return (
     <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
       <>
-        <FormSearch
-          w="w-[400px]"
-          searchQuery={searchQuery}
-          setsearchQuery={setsearchQuery}
-        />
-        {!dataList ? (
+        <FormSearch w="w-[400px]" searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
+        {!searchResult ? (
           <SkelatonCoponent />
-        ) : dataList?.length > 0 ? (
+        ) : searchResult?.length > 0 ? (
           <DataTable
-            data={[{}, ...dataList]}
+            data={[{}, ...searchResult]}
             customStyles={{
               rows: {
                 style: {
-                  paddingRight: '20px',
-                  style: { overflow: 'visible !important' },
+                  paddingRight: "20px",
+                  style: { overflow: "visible !important" },
                 },
               },
 
               cells: {
-                style: { overflow: 'visible !important' },
+                style: { overflow: "visible !important" },
               },
 
               responsiveWrapper: {
-                style: { overflow: 'visible !important' },
+                style: { overflow: "visible !important" },
               },
             }}
             columns={[
               {
-                name: (
-                  <HemaValue
-                    text={'Order Confirmation Number'}
-                    className="font-normal text-[#000000]"
-                  />
-                ),
+                name: <HemaValue text={"Order Confirmation Number"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -150,15 +141,10 @@ const All = ({ setShowDetial, data }) => {
                     )}
                   </>
                 ),
-                sortId: 'firstName',
+                sortId: "firstName",
               },
               {
-                name: (
-                  <HemaValue
-                    text={'Sponsor'}
-                    className="font-normal text-[#000000]"
-                  />
-                ),
+                name: <HemaValue text={"Sponsor"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -173,19 +159,14 @@ const All = ({ setShowDetial, data }) => {
                       // )}
                       />
                     ) : (
-                      <HemaValue text={row?.shipment?.sponsor?.name}/>
+                      <HemaValue text={row?.shipment?.sponsor?.name} />
                     )}
                   </>
                 ),
-                sortId: 'email',
+                sortId: "email",
               },
               {
-                name: (
-                  <HemaValue
-                    text={'Study Name'}
-                    className="font-normal text-[#000000]"
-                  />
-                ),
+                name: <HemaValue text={"Study Name"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 filterable: true,
                 selector: (row, index) => (
@@ -206,15 +187,10 @@ const All = ({ setShowDetial, data }) => {
                     )}
                   </>
                 ),
-                sortId: 'role.name',
+                sortId: "role.name",
               },
               {
-                name: (
-                  <HemaValue
-                    text={'Study Code'}
-                    className="font-normal text-[#000000]"
-                  />
-                ),
+                name: <HemaValue text={"Study Code"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 selector: (row, index) => (
                   <>
@@ -231,22 +207,14 @@ const All = ({ setShowDetial, data }) => {
                       // )}
                       />
                     ) : (
-                      <HemaValue
-                        text={row.shipment?.studyCode}
-
-                      />
+                      <HemaValue text={row.shipment?.studyCode} />
                     )}
                   </>
                 ),
-                sortId: 'isActive',
+                sortId: "isActive",
               },
               {
-                name: (
-                  <HemaValue
-                    text={'Status'}
-                    className="font-normal text-[#000000]"
-                  />
-                ),
+                name: <HemaValue text={"Status"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 selector: (row, index) => (
                   <>
@@ -263,17 +231,14 @@ const All = ({ setShowDetial, data }) => {
                       // )}
                       />
                     ) : (
-                      <HemaValue
-                        text={row.status?.name}
-
-                      />
+                      <HemaValue text={row.status?.name} />
                     )}
                   </>
                 ),
-                sortId: 'isActive',
+                sortId: "isActive",
               },
               {
-                name: 'Actions',
+                name: "Actions",
                 selector: (row, index) =>
                   index === 0 ? (
                     <></>
@@ -281,14 +246,12 @@ const All = ({ setShowDetial, data }) => {
                     <div className="flex">
                       <div className="flex w-[100px] justify-end meta">
                         <Button
-                          Icon={<img src={eyeIcon} alt="" />}
+                          Icon={<img src={binocularIcon} alt="" />}
                           padding={false}
                           color="text-[#dc2626]"
                           bg="bg-bgActionDots"
                           cta={async () => {
-                            const result = await getDetailRecordIdAction(
-                              row.id
-                            );
+                            const result = await getDetailRecordIdAction(row.id);
                             if (result.status === 200) {
                               setShowDetial(true);
                             }
@@ -305,11 +268,7 @@ const All = ({ setShowDetial, data }) => {
             ]}
             pagination
             onSort={(row, direction, sorted) => {
-              setDataList(
-                sortedData(row.sortId, direction, sorted)?.filter(
-                  (data) => Object.keys(data)?.length
-                )
-              );
+              setDataList(sortedData(row.sortId, direction, sorted)?.filter((data) => Object.keys(data)?.length));
             }}
             paginationComponent={(e) => {
               return <Pagination e={e} />;

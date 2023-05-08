@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Tab, Tabs } from 'react-bootstrap';
-import DataTable from 'react-data-table-component';
-import { useSearchParams } from 'react-router-dom';
-import {
-  Assemblies,
-  Cancel,
-  CheckReady,
-  Confirm,
-  CrossIcon,
-  Pending,
-} from '../../HemeIconLibrary';
-import FormContainer from '../../components/Formik/formContainer';
-import HemaHeadingWithSubText from '../../utils/HemaHeadingWithSubText';
-import { Button, Alert, HemaValue, HemaLabel, Heading } from '../../utils';
-import { getAllOrderAction } from '../../Action/order';
-import eyeIcon from '../../assets/images/eye.svg';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Tab, Tabs } from "react-bootstrap";
+import DataTable from "react-data-table-component";
+import { useSearchParams } from "react-router-dom";
+import { Assemblies, Binocular, Cancel, CheckReady, Confirm, CrossIcon, Pending } from "../../HemeIconLibrary";
+import FormContainer from "../../components/Formik/formContainer";
+import HemaHeadingWithSubText from "../../utils/HemaHeadingWithSubText";
+import { Button, Alert, HemaValue, HemaLabel, Heading } from "../../utils";
+import { getAllOrderAction } from "../../Action/order";
+import binocularIcon from "../../assets/images/binocular.svg";
 
 // Components
-import AllApproval from './All';
+import AllApproval from "./All";
 // import PendingUser from './Pending';
 // import Approved from './Approved';
 // import Rejected from './Rejected';
@@ -28,15 +21,13 @@ const LightApproval = () => {
   const { orders } = useSelector((state) => state);
   const [greenLightAction, setgreenLightAction] = useState(false);
   const [approve, setApprove] = useState(false);
-  const [pageSub, setPageSub] = useState(
-    'Manage your green light approval here.'
-  );
+  const [pageSub, setPageSub] = useState("Manage your green light approval here.");
 
   const [showDetail, setShowDetial] = useState(false);
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    localStorage.setItem('green-light-auth',searchParams.get('auth')); // 'name'
+    localStorage.setItem("green-light-auth", searchParams.get("auth")); // 'name'
 
     getAllOrderAction();
   }, [searchParams]);
@@ -45,19 +36,12 @@ const LightApproval = () => {
     <>
       <div className={`block`}>
         <div className="flex gap-[10px] justify-between items-end">
-          <HemaHeadingWithSubText
-            heading="Green Light Approval"
-            sub={pageSub}
-          />
+          <HemaHeadingWithSubText heading="Green Light Approval" sub={pageSub} />
         </div>
         <Alert />
         {!showDetail ? (
           <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
-            <Tabs
-              defaultActiveKey="CompanyLocation"
-              id="uncontrolled-tab-example"
-              className="mb-3 gap-[20px]"
-            >
+            <Tabs defaultActiveKey="CompanyLocation" id="uncontrolled-tab-example" className="mb-3 gap-[20px]">
               <Tab
                 eventKey="CompanyLocation"
                 title={
@@ -67,10 +51,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders} />
               </Tab>
 
               <Tab
@@ -82,14 +63,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={
-                    orders.allOrders?.filter(
-                      (data) => data?.status?.id === 2
-                    ) || []
-                  }
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 2) || []} />
               </Tab>
 
               <Tab
@@ -100,12 +74,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders?.filter(
-                    (data) => data?.status?.id === 3
-                  )}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 3)} />
               </Tab>
 
               <Tab
@@ -116,12 +85,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders?.filter(
-                    (data) => data?.status?.id === 4
-                  )}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 4)} />
               </Tab>
             </Tabs>
           </div>
@@ -133,21 +97,15 @@ const LightApproval = () => {
                 <div className="flex items-center justify-between  pr-[120px] mt-[21px] mb-[32px]">
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Order Confirmation Number" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.order?.orderCode}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.order?.orderCode} />
                   </div>
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Sponsor" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.sponsor?.name}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.sponsor?.name} />
                   </div>
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Study Name" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.studyName}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.studyName} />
                   </div>
                   <div className="flex items-center gap-[20px] ">
                     <HemaLabel text="Site Code" />
@@ -162,27 +120,22 @@ const LightApproval = () => {
                   customStyles={{
                     rows: {
                       style: {
-                        paddingRight: '20px',
-                        style: { overflow: 'visible !important' },
+                        paddingRight: "20px",
+                        style: { overflow: "visible !important" },
                       },
                     },
 
                     cells: {
-                      style: { overflow: 'visible !important' },
+                      style: { overflow: "visible !important" },
                     },
 
                     responsiveWrapper: {
-                      style: { overflow: 'visible !important' },
+                      style: { overflow: "visible !important" },
                     },
                   }}
                   columns={[
                     {
-                      name: (
-                        <HemaValue
-                          text={'Name'}
-                          className="font-normal text-[#000000]"
-                        />
-                      ),
+                      name: <HemaValue text={"Name"} className="font-normal text-[#000000]" />,
                       sortable: true,
                       filterable: true,
                       selector: (row, index) => (
@@ -190,25 +143,15 @@ const LightApproval = () => {
                           <HemaValue text={row.friendlyName} />
                         </>
                       ),
-                      sortId: 'firstName',
+                      sortId: "firstName",
                     },
                     {
-                      name: (
-                        <HemaValue
-                          text={'Action'}
-                          className="font-normal text-[#000000]"
-                        />
-                      ),
+                      name: <HemaValue text={"Action"} className="font-normal text-[#000000]" />,
                       cell: (row) => {
                         return (
                           <div className="flex">
                             <div className="flex w-[100px] justify-end meta">
-                              <Button
-                                Icon={<img src={eyeIcon} alt="" />}
-                                padding={false}
-                                color="text-[#dc2626]"
-                                bg="bg-bgActionDots"
-                              />
+                              <Button Icon={<img src={binocularIcon} alt="" />} padding={false} color="text-[#dc2626]" bg="bg-bgActionDots" />
                             </div>
                           </div>
                         );
@@ -250,13 +193,7 @@ const LightApproval = () => {
           </div>
         )}
 
-        {greenLightAction && (
-          <FormContainer
-            setShowDetial={setShowDetial}
-            setgreenLightAction={setgreenLightAction}
-            approve={approve}
-          />
-        )}
+        {greenLightAction && <FormContainer setShowDetial={setShowDetial} setgreenLightAction={setgreenLightAction} approve={approve} />}
       </div>
     </>
   );

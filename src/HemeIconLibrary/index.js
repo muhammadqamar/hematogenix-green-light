@@ -209,6 +209,7 @@ import { QualityControlTab } from "./qualityControlTab";
 import { PackageSubAction } from "./packageSubAction";
 import { CloseLock } from "./closeLock";
 import { Pending } from "./pending";
+import { Binocular } from "./binocular";
 
 export {
   CloseLock,
@@ -422,4 +423,5 @@ export {
   QualityControlTab,
   PackageSubAction,
   Pending,
+  Binocular,
 };
