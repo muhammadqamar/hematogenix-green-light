@@ -77,7 +77,7 @@ export const common = createSlice({
       }
     },
     removeItemCategoryReducer: (state, action) => {
-      state.allCategories = state.allCategories.filter((data) => data.id !== action.payload);
+      state.allCategories = state.allCategories?.filter((data) => data.id !== action.payload);
     },
     setDropdownValue: (state, action) => {
       state.activeDropdownValue = action.payload;

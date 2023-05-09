@@ -70,15 +70,15 @@ const FilterColumn = (props) => {
                 if (allChecks.includes(val)) {
                   if (type === 'boolean') {
                     setAllChecks(
-                      allChecks.filter((data) => (data !== val ? true : false))
+                      allChecks?.filter((data) => (data !== val ? true : false))
                     );
                   } else {
-                    setAllChecks(allChecks.filter((data) => data !== val));
+                    setAllChecks(allChecks?.filter((data) => data !== val));
                   }
                   dispatch(
                     setRedux({
                       ...reduxValues,
-                      [columnName]: reduxValues[columnName].filter(
+                      [columnName]: reduxValues[columnName]?.filter(
                         (data) => data !== val
                       ),
                     })

@@ -25,7 +25,7 @@ export const kitBuilder = createSlice({
       }
     },
     removeBuildKitreducer: (state, action) => {
-      state.allTemplates = state.allTemplates.filter((data) => data.id !== action.payload);
+      state.allTemplates = state.allTemplates?.filter((data) => data.id !== action.payload);
     },
     setKitTemplateFilter: (state, action) => {
       state.kitTemplateFilter = action.payload;
