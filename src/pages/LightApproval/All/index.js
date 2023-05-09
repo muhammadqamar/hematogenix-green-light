@@ -18,9 +18,11 @@ import { getFullName } from "../Utils";
 
 const All = ({ setShowDetial, data }) => {
   const dispatch = useDispatch();
-  const { settings, orders } = useSelector((state) => state);
+  const { settings, builder, orders } = useSelector((state) => state);
+  const { kitTemplateFilter } = builder;
   const [searchQuery, setsearchQuery] = useState("");
   const [dataList, setDataList] = useState(null);
+  const [filterbuilder, setfilterbuilder] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
 
   useEffect(() => {
@@ -34,6 +36,53 @@ const All = ({ setShowDetial, data }) => {
     const searchdataList = dataList?.filter((item) => item?.shipment?.sponsor?.name.toLowerCase().includes(searchQuery.toLowerCase()));
     setSearchResult(searchdataList);
   }, [dataList, searchQuery]);
+
+  //search for kit builder
+  useEffect(() => {
+    (async () => {
+      if (searchQuery) {
+        const searchResult = filter(builder?.allTemplates, {
+          keywords: searchQuery, // search for any field that contains the "Do" string
+
+          caseSensitive: false,
+        });
+        setfilterbuilder(searchResult);
+      } else {
+        setfilterbuilder(builder?.allTemplates);
+      }
+    })();
+  }, [searchQuery, builder?.allTemplates]);
+
+  // sorting for green light template
+  const caseInsensitiveSort = (rowA, rowB) => {
+    const a = rowA.name?.toLowerCase();
+    const b = rowB.name?.toLowerCase();
+
+    if (a > b) {
+      return 1;
+    }
+
+    if (b > a) {
+      return -1;
+    }
+
+    return 0;
+  };
+
+  const sortQuantitySum = (rowA, rowB) => {
+    const itemOneQtySum = rowA.items?.reduce((accumulator, currentValue) => accumulator + currentValue.itemPerKit, 0);
+    const itemTwoQtySum = rowB.items?.reduce((accumulator, currentValue) => accumulator + currentValue.itemPerKit, 0);
+
+    if (itemOneQtySum > itemTwoQtySum) {
+      return 1;
+    }
+
+    if (itemTwoQtySum > itemOneQtySum) {
+      return -1;
+    }
+
+    return 0;
+  };
 
   //search for location
   // useEffect(() => {
@@ -98,7 +147,7 @@ const All = ({ setShowDetial, data }) => {
         <FormSearch w="w-[400px]" searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
         {!searchResult ? (
           <SkelatonCoponent />
-        ) : searchResult?.length > 0 ? (
+        ) : searchResult?.length > 0 || Object.keys(searchResult)?.length ? (
           <DataTable
             data={[{}, ...searchResult]}
             customStyles={{
@@ -126,44 +175,39 @@ const All = ({ setShowDetial, data }) => {
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                      // columnName="firstName"
-                      // secondColumnName="lastName"
-                      // setRedux={setAllFilter}
-                      // reduxValues={systemUsersFilter || []}
-                      // options={Array.from(
-                      //   new Set(
-                      //     systemUsers?.map((filter) => getFullName(filter))
-                      //   )
-                      // )}
+                        columnName="firstName"
+                        setRedux={setAllFilter}
+                        reduxValues={searchResult || []}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.order?.orderCode)))}
                       />
                     ) : (
                       <HemaValue text={row?.shipment?.order?.orderCode} />
                     )}
                   </>
                 ),
+                sortFunction: caseInsensitiveSort,
                 sortId: "firstName",
               },
               {
                 name: <HemaValue text={"Sponsor"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 filterable: true,
+                sortFunction: sortQuantitySum,
                 selector: (row, index) => (
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                      // columnName="email"
-                      // setRedux={setAllFilter}
-                      // reduxValues={systemUsersFilter || []}
-                      // options={Array.from(
-                      //   new Set(systemUsers?.map((filter) => filter.email))
-                      // )}
+                        columnName="name"
+                        setRedux={setAllFilter}
+                        reduxValues={searchResult || []}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.sponsor?.name)))}
                       />
                     ) : (
                       <HemaValue text={row?.shipment?.sponsor?.name} />
                     )}
                   </>
                 ),
-                sortId: "email",
+                sortId: "name",
               },
               {
                 name: <HemaValue text={"Study Name"} className="font-normal text-[#000000]" />,
@@ -173,14 +217,10 @@ const All = ({ setShowDetial, data }) => {
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                      // columnName="role"
-                      // setRedux={setAllFilter}
-                      // reduxValues={systemUsersFilter || []}
-                      // options={Array.from(
-                      //   new Set(
-                      //     systemUsers?.map((filter) => filter.role?.name)
-                      //   )
-                      // )}
+                        columnName="role"
+                        setRedux={setAllFilter}
+                        reduxValues={searchResult || []}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.studyName)))}
                       />
                     ) : (
                       <HemaValue text={row?.shipment?.studyName} />
@@ -196,15 +236,13 @@ const All = ({ setShowDetial, data }) => {
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                      // columnName="isActive"
-                      // type="boolean"
-                      // boolTrueText="Active"
-                      // boolFalseText="In-Active"
-                      // setRedux={setAllFilter}
-                      // reduxValues={systemUsersFilter || []}
-                      // options={Array.from(
-                      //   new Set(systemUsers?.map((filter) => filter.isActive))
-                      // )}
+                        columnName="isActive"
+                        type="boolean"
+                        boolTrueText="Active"
+                        boolFalseText="In-Active"
+                        setRedux={setAllFilter}
+                        reduxValues={searchResult || []}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.studyCode)))}
                       />
                     ) : (
                       <HemaValue text={row.shipment?.studyCode} />
@@ -220,15 +258,13 @@ const All = ({ setShowDetial, data }) => {
                   <>
                     {index === 0 ? (
                       <FilterColumn
-                      // columnName="isActive"
-                      // type="boolean"
-                      // boolTrueText="Active"
-                      // boolFalseText="In-Active"
-                      // setRedux={setAllFilter}
-                      // reduxValues={systemUsersFilter || []}
-                      // options={Array.from(
-                      //   new Set(systemUsers?.map((filter) => filter.isActive))
-                      // )}
+                        columnName="isActive"
+                        type="boolean"
+                        boolTrueText="Active"
+                        boolFalseText="In-Active"
+                        setRedux={setAllFilter}
+                        reduxValues={searchResult || []}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.status?.name)))}
                       />
                     ) : (
                       <HemaValue text={row.status?.name} />
