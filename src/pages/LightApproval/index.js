@@ -210,14 +210,14 @@ const LightApproval = () => {
                       cell: (row) => {
                         return (
                           <div className="flex">
-                            <div className="flex w-[100px] justify-end meta">
+                            <a target="_blank" href={row?.storageUrl} rel="noreferrer" className="flex w-[100px] justify-end meta">
                               <Button
                                 Icon={<img src={binocularIcon} alt="" />}
                                 padding={false}
                                 color="text-[#dc2626]"
                                 bg="bg-bgActionDots"
                               />
-                            </div>
+                            </a>
                           </div>
                         );
                       },
