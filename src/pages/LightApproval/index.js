@@ -62,7 +62,7 @@ const LightApproval = () => {
         {!showDetail ? (
           <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
             <Tabs
-              defaultActiveKey="CompanyLocation"
+              defaultActiveKey="SystemUser"
               id="uncontrolled-tab-example"
               className="mb-3 gap-[20px]"
             >
