@@ -230,7 +230,7 @@ const All = ({ setShowDetial, data }) => {
                 sortId: "role.name",
               },
               {
-                name: <HemaValue text={"Study Code"} className="font-normal text-[#000000]" />,
+                name: <HemaValue text={"Site Code"} className="font-normal text-[#000000]" />,
                 sortable: true,
                 selector: (row, index) => (
                   <>
@@ -242,10 +242,10 @@ const All = ({ setShowDetial, data }) => {
                         boolFalseText="In-Active"
                         setRedux={setAllFilter}
                         reduxValues={searchResult || []}
-                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.studyCode)))}
+                        options={Array.from(new Set(searchResult?.map((filter) => filter.shipment?.order?.siteCode)))}
                       />
                     ) : (
-                      <HemaValue text={row.shipment?.studyCode} />
+                      <HemaValue text={row.shipment?.order?.siteCode} />
                     )}
                   </>
                 ),
