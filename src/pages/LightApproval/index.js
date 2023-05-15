@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Tab, Tabs } from 'react-bootstrap';
-import DataTable from 'react-data-table-component';
-import { useSearchParams } from 'react-router-dom';
-import {
-  Assemblies,
-  Binocular,
-  Cancel,
-  CheckReady,
-  Confirm,
-  CrossIcon,
-  Pending,
-  PreviousIcon,
-} from '../../HemeIconLibrary';
-import FormContainer from '../../components/Formik/formContainer';
-import HemaHeadingWithSubText from '../../utils/HemaHeadingWithSubText';
-import { Button, Alert, HemaValue, HemaLabel, Heading } from '../../utils';
-import { getAllOrderAction } from '../../Action/order';
-import binocularIcon from '../../assets/images/binocular.svg';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Tab, Tabs } from "react-bootstrap";
+import DataTable from "react-data-table-component";
+import { useSearchParams } from "react-router-dom";
+import { Assemblies, Binocular, Cancel, CheckReady, Confirm, CrossIcon, Pending, PreviousIcon } from "../../HemeIconLibrary";
+import FormContainer from "../../components/Formik/formContainer";
+import HemaHeadingWithSubText from "../../utils/HemaHeadingWithSubText";
+import { Button, Alert, HemaValue, HemaLabel, Heading } from "../../utils";
+import { getAllOrderAction } from "../../Action/order";
+import binocularIcon from "../../assets/images/binocular.svg";
 
 // Components
-import AllApproval from './All';
-import { showErrorReducer } from '../../Store/reducers/uiSettings';
+import AllApproval from "./All";
+import { showErrorReducer } from "../../Store/reducers/uiSettings";
 // import PendingUser from './Pending';
 // import Approved from './Approved';
 // import Rejected from './Rejected';
@@ -31,19 +22,17 @@ const LightApproval = () => {
   const { orders } = useSelector((state) => state);
   const [greenLightAction, setgreenLightAction] = useState(false);
   const [approve, setApprove] = useState(false);
-  const [pageSub, setPageSub] = useState(
-    'Manage your green light approval here.'
-  );
+  const [pageSub, setPageSub] = useState("Manage your green light approval here.");
   const [showError, setShowWError] = useState();
   const [showDetail, setShowDetial] = useState(false);
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     (async () => {
-      localStorage.setItem('green-light-auth', searchParams.get('auth')); // 'name'
+      localStorage.setItem("green-light-auth", searchParams.get("auth")); // 'name'
       const result = await getAllOrderAction();
       if (result.status !== 200) {
-        dispatch(showErrorReducer('you are not authorized to view this page. Kindly check your link or contact to support.'))
+        dispatch(showErrorReducer("you are not authorized to view this page. Kindly check your link or contact to support."));
       }
     })();
   }, [searchParams]);
@@ -52,20 +41,13 @@ const LightApproval = () => {
     <>
       <div className={`block`}>
         <div className="flex gap-[10px] justify-between items-end">
-          <HemaHeadingWithSubText
-            heading="Green Light Approval"
-            sub={pageSub}
-          />
+          <HemaHeadingWithSubText heading="Green Light Approval" sub={pageSub} />
         </div>
         <br />
         <Alert type="error" />
         {!showDetail ? (
           <div className="bg-white rounded-[5px] px-[10px] py-[15px] mt-[27px] mb-[13px] inventory-tabs">
-            <Tabs
-              defaultActiveKey="SystemUser"
-              id="uncontrolled-tab-example"
-              className="mb-3 gap-[20px]"
-            >
+            <Tabs defaultActiveKey="SystemUser" id="uncontrolled-tab-example" className="mb-3 gap-[20px]">
               <Tab
                 eventKey="CompanyLocation"
                 title={
@@ -75,10 +57,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders} />
               </Tab>
 
               <Tab
@@ -90,14 +69,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={
-                    orders.allOrders?.filter(
-                      (data) => data?.status?.id === 2
-                    ) || []
-                  }
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 2) || []} />
               </Tab>
 
               <Tab
@@ -108,12 +80,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders?.filter(
-                    (data) => data?.status?.id === 3
-                  )}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 3)} />
               </Tab>
 
               <Tab
@@ -124,12 +91,7 @@ const LightApproval = () => {
                   </div>
                 }
               >
-                <AllApproval
-                  setShowDetial={setShowDetial}
-                  data={orders.allOrders?.filter(
-                    (data) => data?.status?.id === 4
-                  )}
-                />
+                <AllApproval setShowDetial={setShowDetial} data={orders.allOrders?.filter((data) => data?.status?.id === 4)} />
               </Tab>
             </Tabs>
           </div>
@@ -141,25 +103,19 @@ const LightApproval = () => {
                 <div className="flex items-center justify-between  pr-[120px] mt-[21px] mb-[32px]">
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Order Confirmation Number" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.order?.orderCode}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.order?.orderCode} />
                   </div>
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Sponsor" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.sponsor?.name}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.sponsor?.name} />
                   </div>
                   <div className="flex items-center gap-[20px]">
                     <HemaLabel text="Study Name" />
-                    <HemaValue
-                      text={orders?.activeOrder?.shipment?.studyName}
-                    />
+                    <HemaValue text={orders?.activeOrder?.shipment?.studyName} />
                   </div>
                   <div className="flex items-center gap-[20px] ">
                     <HemaLabel text="Site Code" />
-                    <HemaValue text={orders?.activeOrder?.shipment?.SiteCode} />
+                    <HemaValue text={orders?.activeOrder?.shipment?.order?.siteCode} />
                   </div>
                 </div>
                 <Heading heading="Documents" border />
@@ -170,27 +126,22 @@ const LightApproval = () => {
                   customStyles={{
                     rows: {
                       style: {
-                        paddingRight: '20px',
-                        style: { overflow: 'visible !important' },
+                        paddingRight: "20px",
+                        style: { overflow: "visible !important" },
                       },
                     },
 
                     cells: {
-                      style: { overflow: 'visible !important' },
+                      style: { overflow: "visible !important" },
                     },
 
                     responsiveWrapper: {
-                      style: { overflow: 'visible !important' },
+                      style: { overflow: "visible !important" },
                     },
                   }}
                   columns={[
                     {
-                      name: (
-                        <HemaValue
-                          text={'Name'}
-                          className="font-normal text-[#000000]"
-                        />
-                      ),
+                      name: <HemaValue text={"Name"} className="font-normal text-[#000000]" />,
                       sortable: true,
                       filterable: true,
                       selector: (row, index) => (
@@ -198,25 +149,15 @@ const LightApproval = () => {
                           <HemaValue text={row.friendlyName} />
                         </>
                       ),
-                      sortId: 'firstName',
+                      sortId: "firstName",
                     },
                     {
-                      name: (
-                        <HemaValue
-                          text={'Action'}
-                          className="font-normal text-[#000000]"
-                        />
-                      ),
+                      name: <HemaValue text={"Action"} className="font-normal text-[#000000]" />,
                       cell: (row) => {
                         return (
                           <div className="flex">
                             <a target="_blank" href={row?.storageUrl} rel="noreferrer" className="flex w-[100px] justify-end meta">
-                              <Button
-                                Icon={<img src={binocularIcon} alt="" />}
-                                padding={false}
-                                color="text-[#dc2626]"
-                                bg="bg-bgActionDots"
-                              />
+                              <Button Icon={<img src={binocularIcon} alt="" />} padding={false} color="text-[#dc2626]" bg="bg-bgActionDots" />
                             </a>
                           </div>
                         );
@@ -232,14 +173,14 @@ const LightApproval = () => {
 
             <div className="w-full rounded-[5px] bg-white px-[16px] py-[21px]">
               <div className="flex items-center justify-end w-full gap-2">
-              <Button
+                <Button
                   Icon={<PreviousIcon />}
                   text="Back"
                   color="text-[#605DAF]"
                   bg="bg-white"
                   border="border-[2px] border-solid border-[#605DAF]"
                   cta={() => {
-                    setShowDetial(false)
+                    setShowDetial(false);
                   }}
                 />
                 <Button
@@ -268,13 +209,7 @@ const LightApproval = () => {
           </div>
         )}
 
-        {greenLightAction && (
-          <FormContainer
-            setShowDetial={setShowDetial}
-            setgreenLightAction={setgreenLightAction}
-            approve={approve}
-          />
-        )}
+        {greenLightAction && <FormContainer setShowDetial={setShowDetial} setgreenLightAction={setgreenLightAction} approve={approve} />}
       </div>
     </>
   );
